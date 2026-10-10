@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iTraining — Practical Tech Skills</title>
+<meta name="description" content="Free, hands-on training programs in hardware, software, networking, cybersecurity and cloud computing.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230f766e'/><text x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'>i</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f8fa;--surface:#fff;--surface-2:#f1f3f6;--text:#0f172a;--muted:#5b6475;--line:#e3e7ee;
+  --brand:#0f766e;--brand-2:#14b8a6;--brand-ink:#fff;--warn:#b45309;--ok:#15803d;
+  --hw:#c2410c;--sw:#4f46e5;--net:#0369a1;--sec:#be123c;--cloud:#7c3aed;
+  --radius:14px;--shadow:0 1px 2px rgba(15,23,42,.05),0 4px 16px rgba(15,23,42,.06);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b1020;--surface:#121a2e;--surface-2:#18213a;--text:#e6ebf5;--muted:#9aa5bd;--line:#243051;
+  --brand:#2dd4bf;--brand-2:#5eead4;--brand-ink:#04201d;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  --hw:#fb923c;--sw:#818cf8;--net:#38bdf8;--sec:#fb7185;--cloud:#a78bfa;}}
+:root[data-theme="dark"]{
+  --bg:#0b1020;--surface:#121a2e;--surface-2:#18213a;--text:#e6ebf5;--muted:#9aa5bd;--line:#243051;
+  --brand:#2dd4bf;--brand-2:#5eead4;--brand-ink:#04201d;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  --hw:#fb923c;--sw:#818cf8;--net:#38bdf8;--sec:#fb7185;--cloud:#a78bfa;}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;cursor:pointer}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.88em}
+.wrap{max-width:1160px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:16px;height:62px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;font-size:1.15rem;letter-spacing:-.02em}
+.logo span.mark{width:32px;height:32px;border-radius:9px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:800}
+.nav .links{display:flex;gap:4px;margin-left:auto}
+.nav .links a{text-decoration:none;color:var(--muted);padding:8px 12px;border-radius:8px;font-weight:500;font-size:.95rem}
+.nav .links a:hover,.nav .links a.on{color:var(--text);background:var(--surface-2)}
+.iconbtn{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:9px;width:38px;height:38px;display:grid;place-items:center}
+@media(max-width:640px){.nav .links a.hide-sm{display:none}}
+
+.hero{padding:64px 0 40px}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;letter-spacing:-.035em;margin:0 0 16px;max-width:820px}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero p.lead{font-size:1.15rem;color:var(--muted);max-width:640px;margin:0 0 28px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:11px 18px;font-weight:600;border:1px solid transparent;text-decoration:none}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}
+.btn.ghost{border-color:var(--line);background:var(--surface)}
+.btn.sm{padding:7px 12px;font-size:.9rem}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:40px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.stat b{display:block;font-size:1.6rem;letter-spacing:-.02em}
+.stat span{color:var(--muted);font-size:.9rem}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+section.block{padding:32px 0}
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.sec-head h2{margin:0;font-size:1.6rem;letter-spacing:-.02em}
+.sec-head p{margin:4px 0 0;color:var(--muted)}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.search{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:10px;padding:9px 12px;min-width:220px;font:inherit}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:6px 12px;font-size:.88rem;font-weight:500}
+.chip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+@media(max-width:380px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:12px;text-decoration:none;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:var(--accent,var(--brand))}
+.card .ic{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+.card h3{margin:0;font-size:1.2rem;letter-spacing:-.01em}
+.card p{margin:0;color:var(--muted);font-size:.95rem}
+.meta{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.85rem}
+.meta span{display:inline-flex;align-items:center;gap:5px}
+.bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent,var(--brand));border-radius:99px;transition:width .3s}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted)}
+
+.paths{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.path{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.path h4{margin:0 0 6px;font-size:1.05rem}
+.path p{margin:0 0 12px;color:var(--muted);font-size:.92rem}
+.path ol{margin:0;padding-left:20px;font-size:.92rem}
+.path li{margin:3px 0}
+
+/* track page */
+.crumb{color:var(--muted);font-size:.9rem;padding-top:24px}
+.crumb a{text-decoration:none;color:var(--muted)}
+.crumb a:hover{color:var(--text)}
+.thead{display:grid;grid-template-columns:1fr 300px;gap:24px;padding:20px 0 8px;align-items:start}
+@media(max-width:860px){.thead{grid-template-columns:1fr}}
+.thead h1{margin:8px 0 10px;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.03em;line-height:1.1}
+.thead .desc{color:var(--muted);font-size:1.05rem;margin:0 0 14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.panel h5{margin:0 0 10px;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.panel ul{margin:0;padding-left:18px;font-size:.93rem}
+.panel ul li{margin:4px 0}
+.progress-big{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+.progress-big b{font-size:2rem;letter-spacing:-.03em}
+
+.modules{display:flex;flex-direction:column;gap:12px;padding:16px 0 40px}
+.mod{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.mod>summary{list-style:none;display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer}
+.mod>summary::-webkit-details-marker{display:none}
+.mod .num{width:34px;height:34px;flex:none;border-radius:9px;background:var(--surface-2);display:grid;place-items:center;font-weight:700;font-size:.9rem}
+.mod.done .num{background:var(--accent);color:#fff}
+.mod .mt{flex:1;min-width:0}
+.mod .mt b{display:block;font-size:1.02rem}
+.mod .mt small{color:var(--muted)}
+.mod .chev{transition:transform .2s;color:var(--muted)}
+.mod[open] .chev{transform:rotate(180deg)}
+.mod .body{padding:0 18px 18px 66px;display:grid;gap:16px}
+@media(max-width:600px){.mod .body{padding:0 16px 16px}}
+.mod h6{margin:0 0 6px;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.mod ul{margin:0;padding-left:18px}
+.lab{border:1px dashed var(--line);background:var(--surface-2);border-radius:10px;padding:14px}
+.lab b{display:flex;align-items:center;gap:8px}
+.lab ol{margin:8px 0 0;padding-left:20px}
+.lab pre{margin:10px 0 0;background:#0b1020;color:#d7e3ff;border-radius:8px;padding:12px;overflow:auto;font-size:.82rem}
+.quiz{border:1px solid var(--line);border-radius:10px;padding:14px}
+.quiz .q{font-weight:600;margin-bottom:8px}
+.quiz .opts{display:grid;gap:6px}
+.quiz .opts button{text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:8px;padding:8px 12px}
+.quiz .opts button.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.quiz .opts button.wrong{border-color:var(--sec);background:color-mix(in srgb,var(--sec) 10%,transparent)}
+.quiz .fb{margin-top:8px;font-size:.9rem;color:var(--muted)}
+.mod-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.cert{text-align:center;padding:28px;border:2px solid var(--accent);border-radius:var(--radius);background:var(--surface);margin-bottom:40px}
+.cert h3{margin:0 0 6px}
+.dash-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem;margin-top:24px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.empty{color:var(--muted);padding:24px;text-align:center;border:1px dashed var(--line);border-radius:var(--radius)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="logo" href="#/"><span class="mark">i</span>iTraining</a>
+    <nav class="links">
+      <a href="#/" data-nav="home">Programs</a>
+      <a href="#/paths" data-nav="paths" class="hide-sm">Career paths</a>
+      <a href="#/progress" data-nav="progress">My progress</a>
+    </nav>
+    <button class="iconbtn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">◐</button>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div>© <span id="yr"></span> iTraining — free, hands-on tech education.</div>
+    <div>Progress is saved in your browser.</div>
+  </div>
+</footer>
+
+<script>
+/* ---------- ICONS ---------- */
+const ICON = {
+  hw:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>',
+  sw:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>',
+  net:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-2h14v2M12 12v3"/></svg>',
+  sec:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>',
+  cloud:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.5 19a4.5 4.5 0 0 0 .5-9 6 6 0 0 0-11.6 1.5A4 4 0 0 0 7 19z"/></svg>',
+  clock:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  book:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h10a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/></svg>',
+  flask:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6M10 3v6L4 20h16L14 9V3"/></svg>',
+  chev:'<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>'
+};
+
+/* ---------- CURRICULUM ---------- */
+const TRACKS = [
+{
+ id:'hardware', key:'hw', title:'Computer Hardware & IT Support', level:'Beginner', weeks:8,
+ summary:'Build, diagnose and repair PCs and laptops. Learn components, peripherals, troubleshooting methodology and help-desk practice.',
+ outcomes:['Assemble a desktop PC from parts','Diagnose boot, power and thermal faults','Install and image Windows & Linux','Handle tickets like a help-desk technician'],
+ certs:['CompTIA A+ (220-1101 / 1102)'],
+ tools:['Multimeter','POST card','Rufus / Ventoy','Clonezilla','CPU-Z / HWiNFO'],
+ modules:[
+  {t:'Inside the computer',d:'CPU, motherboard, chipset, RAM, storage, PSU, form factors.',topics:['Motherboard form factors (ATX, mATX, ITX) and sockets','RAM types: DDR4 vs DDR5, dual-channel, ECC','Storage: HDD, SATA SSD, NVMe, RAID 0/1/5/10','PSU ratings, connectors and wattage sizing'],
+   lab:{t:'Spec a build for a given budget',steps:['Pick a use case (office, gaming, workstation)','Choose compatible CPU + motherboard + RAM','Size the PSU with a 30% headroom','Justify each choice in a one-page sheet']},
+   quiz:{q:'Which storage interface typically gives the highest throughput?',o:['SATA III','NVMe over PCIe 4.0','USB 3.0','IDE'],a:1,e:'NVMe on PCIe 4.0 x4 reaches ~7 GB/s, versus ~550 MB/s for SATA III.'}},
+  {t:'PC assembly & BIOS/UEFI',d:'Hands-on build, firmware settings and boot order.',topics:['ESD safety and cable management','Installing CPU, cooler, RAM, M.2 drives','UEFI vs legacy BIOS, Secure Boot, TPM 2.0','POST codes and beep codes'],
+   lab:{t:'Build and first boot',steps:['Assemble outside the case ("breadboarding")','Check POST, then mount into the case','Enable XMP/EXPO and verify RAM speed','Set the boot order to USB installer']},
+   quiz:{q:'Which feature is required by Windows 11?',o:['Legacy BIOS','TPM 2.0','IDE mode','Floppy controller'],a:1,e:'Windows 11 requires TPM 2.0 and UEFI with Secure Boot capability.'}},
+  {t:'Operating system installation',d:'Install, partition, drivers and imaging.',topics:['GPT vs MBR partitioning','Windows install, activation, drivers','Ubuntu install and dual boot','Disk imaging and deployment'],
+   lab:{t:'Dual-boot a test machine',steps:['Create a Ventoy USB with Windows and Ubuntu ISOs','Install Windows first, leave unallocated space','Install Ubuntu alongside with GRUB','Capture an image with Clonezilla'],code:'# Check partitions on Linux\nlsblk -f\nsudo fdisk -l\n# Windows (admin cmd)\ndiskpart\nlist disk'},
+   quiz:{q:'GPT partitioning is needed for boot disks larger than…',o:['500 GB','2 TB','8 TB','There is no limit for MBR'],a:1,e:'MBR is limited to 2 TB per disk; GPT removes that limit.'}},
+  {t:'Troubleshooting methodology',d:'A repeatable 6-step method for any fault.',topics:['Identify → theory → test → plan → verify → document','Power and no-boot faults','Overheating and thermal paste','Using a multimeter on a PSU'],
+   lab:{t:'Fault-finding scenarios',steps:['Machine powers on, no display: isolate RAM/GPU','Random shutdowns: check temps with HWiNFO','Clicking disk: read SMART data','Write a ticket resolution note for each']},
+   quiz:{q:'What is the FIRST step in the troubleshooting methodology?',o:['Replace the part','Identify the problem','Document findings','Escalate'],a:1,e:'Always start by identifying the problem: question the user, reproduce, gather info.'}},
+  {t:'Laptops, mobile & printers',d:'Portable devices, peripherals and printing.',topics:['Laptop disassembly and battery safety','Mobile device sync, MDM basics','Laser vs inkjet vs thermal printing','Network printer setup'],
+   lab:{t:'Replace a laptop SSD and RAM',steps:['Back up, then power off and remove battery','Swap the SSD and clone the old disk','Upgrade SO-DIMM RAM','Verify in BIOS and OS']},
+   quiz:{q:'Which printing process uses a fuser?',o:['Inkjet','Thermal','Laser','Impact'],a:2,e:'Laser printers fuse toner onto paper with heat and pressure.'}},
+  {t:'Help desk & customer service',d:'Ticketing, SLAs, remote support and documentation.',topics:['Ticket lifecycle and priorities','SLA, escalation tiers L1/L2/L3','Remote tools: RDP, Quick Assist, AnyDesk','Writing knowledge-base articles'],
+   lab:{t:'Run a mock help-desk shift',steps:['Install a free ticketing tool (e.g. osTicket in Docker)','Log and triage 5 sample tickets','Resolve one via remote session','Publish a KB article']},
+   quiz:{q:'A P1 ticket usually means…',o:['Cosmetic issue','Business-critical outage','Feature request','Password hint'],a:1,e:'Priority 1 is the highest: a critical outage affecting many users.'}}
+ ]},
+{
+ id:'software', key:'sw', title:'Software Development', level:'Beginner → Intermediate', weeks:12,
+ summary:'Program in Python and JavaScript, use Git, build web apps and APIs, test and ship them.',
+ outcomes:['Write clean Python and JavaScript','Version code with Git and GitHub','Build a REST API with a database','Deploy a full-stack web app'],
+ certs:['PCEP / PCAP (Python Institute)','GitHub Foundations'],
+ tools:['VS Code','Python 3','Node.js','Git & GitHub','PostgreSQL','Docker'],
+ modules:[
+  {t:'Programming fundamentals with Python',d:'Variables, control flow, functions, data structures.',topics:['Types, lists, dicts, sets','Loops, conditionals, comprehensions','Functions, modules, virtual environments','Reading/writing files, error handling'],
+   lab:{t:'Build a CLI expense tracker',steps:['Store entries in a JSON file','Add, list and total by category','Handle bad input with try/except','Package it as a module'],code:'import json, sys\nfrom pathlib import Path\nDB = Path("expenses.json")\ndata = json.loads(DB.read_text()) if DB.exists() else []\ncmd, *args = sys.argv[1:]\nif cmd == "add":\n    data.append({"cat": args[0], "amt": float(args[1])})\n    DB.write_text(json.dumps(data, indent=2))\nelif cmd == "total":\n    print(sum(e["amt"] for e in data))'},
+   quiz:{q:'What does a Python dict store?',o:['Ordered unique values','Key-value pairs','Only integers','Immutable sequences'],a:1,e:'A dict maps hashable keys to values.'}},
+  {t:'Git & collaboration',d:'Version control and team workflow.',topics:['init, add, commit, log, diff','Branches, merges and rebases','Pull requests and code review','.gitignore and commit hygiene'],
+   lab:{t:'Feature-branch workflow',steps:['Create a repo on GitHub','Branch, commit, open a pull request','Resolve a merge conflict','Tag a release v1.0.0'],code:'git switch -c feature/login\ngit add .\ngit commit -m "Add login form"\ngit push -u origin feature/login'},
+   quiz:{q:'Which command creates and switches to a new branch?',o:['git branch -d x','git switch -c x','git merge x','git stash x'],a:1,e:'git switch -c (or git checkout -b) creates and switches.'}},
+  {t:'Web fundamentals: HTML, CSS, JavaScript',d:'Build responsive, interactive pages.',topics:['Semantic HTML and accessibility','CSS flexbox, grid, responsive design','DOM, events, fetch API','Modern JS: modules, async/await'],
+   lab:{t:'Responsive portfolio page',steps:['Lay out with CSS grid','Add dark mode with CSS variables','Load projects from a JSON file with fetch','Deploy free on Cloudflare Pages']},
+   quiz:{q:'Which keyword pauses an async function until a Promise settles?',o:['yield','await','defer','then'],a:1,e:'await suspends the async function until the Promise resolves or rejects.'}},
+  {t:'Databases & SQL',d:'Relational modelling and queries.',topics:['Tables, keys, normalization','SELECT, JOIN, GROUP BY','Indexes and transactions','NoSQL overview (MongoDB, DynamoDB)'],
+   lab:{t:'Model a school database',steps:['Design students, courses, enrollments','Write 10 queries incl. JOINs and aggregates','Add an index and compare EXPLAIN plans','Back up with pg_dump'],code:'SELECT c.title, COUNT(e.student_id) AS enrolled\nFROM courses c\nLEFT JOIN enrollments e ON e.course_id = c.id\nGROUP BY c.title\nORDER BY enrolled DESC;'},
+   quiz:{q:'Which JOIN keeps all rows from the left table?',o:['INNER JOIN','LEFT JOIN','CROSS JOIN','SELF JOIN'],a:1,e:'LEFT JOIN returns all left rows, with NULLs when no match.'}},
+  {t:'Building REST APIs',d:'Back-end services with Python or Node.',topics:['HTTP verbs, status codes, JSON','FastAPI / Express routing','Authentication: API keys, JWT, OAuth2','Validation and error handling'],
+   lab:{t:'Courses API with FastAPI',steps:['CRUD endpoints for courses','Connect to PostgreSQL','Protect writes with an API key header','Auto-generate OpenAPI docs'],code:'from fastapi import FastAPI, Header, HTTPException\napp = FastAPI()\n@app.post("/courses")\ndef create(c: dict, x_api_key: str = Header()):\n    if x_api_key != "secret":\n        raise HTTPException(401)\n    return {"ok": True, **c}'},
+   quiz:{q:'Which status code means "created"?',o:['200','201','204','404'],a:1,e:'201 Created is returned after successfully creating a resource.'}},
+  {t:'Testing, CI/CD & deployment',d:'Ship reliable software automatically.',topics:['Unit tests with pytest / Jest','Docker images','GitHub Actions pipelines','Environments and secrets'],
+   lab:{t:'Pipeline from push to production',steps:['Write tests for the API','Dockerize the app','Run tests in GitHub Actions on each push','Deploy on merge to main']},
+   quiz:{q:'In CI, tests should run…',o:['Only before releases','On every push / pull request','Only on Fridays','Manually'],a:1,e:'Continuous integration runs the test suite automatically on each change.'}}
+ ]},
+{
+ id:'networking', key:'net', title:'Computer Networking', level:'Beginner → Intermediate', weeks:10,
+ summary:'Understand how data moves: OSI/TCP-IP, addressing and subnetting, switching, routing, wireless and network services.',
+ outcomes:['Subnet IPv4 networks quickly and correctly','Configure VLANs, trunks and routing','Deploy DHCP, DNS and NAT','Troubleshoot with ping, traceroute and Wireshark'],
+ certs:['CompTIA Network+','Cisco CCNA (200-301)'],
+ tools:['Cisco Packet Tracer','GNS3','Wireshark','nmap','iperf3'],
+ modules:[
+  {t:'Network models & media',d:'OSI and TCP/IP, cabling and devices.',topics:['OSI 7 layers vs TCP/IP 4 layers','Encapsulation: frames, packets, segments','Copper, fiber, Wi-Fi media','Hubs, switches, routers, firewalls'],
+   lab:{t:'Capture a web request',steps:['Open Wireshark, start capture','Browse an HTTP site','Follow DNS → TCP handshake → HTTP','Label each layer in the capture']},
+   quiz:{q:'At which OSI layer does a router operate?',o:['Layer 1','Layer 2','Layer 3','Layer 7'],a:2,e:'Routers forward packets based on IP addresses, Layer 3.'}},
+  {t:'IPv4, subnetting & IPv6',d:'Addressing that every engineer must master.',topics:['Binary, masks and CIDR','Subnetting and VLSM','Private ranges and NAT','IPv6 addressing and SLAAC'],
+   lab:{t:'Subnet a company network',steps:['Given 10.20.0.0/22, plan 4 departments','Allocate with VLSM by size','Document network, broadcast, usable range','Verify with an online calculator']},
+   quiz:{q:'How many usable hosts are in a /26?',o:['30','62','64','126'],a:1,e:'/26 = 64 addresses, minus network and broadcast = 62.'}},
+  {t:'Switching & VLANs',d:'Layer 2 design and segmentation.',topics:['MAC tables and frame forwarding','VLANs, trunks (802.1Q)','STP and loop prevention','EtherChannel'],
+   lab:{t:'VLANs in Packet Tracer',steps:['Create VLAN 10 (Staff) and 20 (Students)','Assign access ports','Configure a trunk between switches','Test isolation with ping'],code:'Switch(config)# vlan 10\nSwitch(config-vlan)# name STAFF\nSwitch(config)# interface fa0/1\nSwitch(config-if)# switchport mode access\nSwitch(config-if)# switchport access vlan 10\nSwitch(config)# interface g0/1\nSwitch(config-if)# switchport mode trunk'},
+   quiz:{q:'What prevents switching loops?',o:['DHCP','STP','NAT','ARP'],a:1,e:'Spanning Tree Protocol blocks redundant paths to prevent loops.'}},
+  {t:'Routing',d:'Static and dynamic routing between networks.',topics:['Routing table and longest-prefix match','Static and default routes','Inter-VLAN routing (router-on-a-stick)','OSPF single-area'],
+   lab:{t:'Three-router OSPF lab',steps:['Address point-to-point links','Enable OSPF area 0','Verify neighbors and routes','Break a link and watch convergence'],code:'Router(config)# router ospf 1\nRouter(config-router)# network 10.0.0.0 0.0.0.255 area 0\nRouter# show ip ospf neighbor\nRouter# show ip route'},
+   quiz:{q:'Default route in CIDR notation?',o:['127.0.0.1/8','0.0.0.0/0','255.255.255.255/32','10.0.0.0/8'],a:1,e:'0.0.0.0/0 matches any destination.'}},
+  {t:'Network services',d:'DHCP, DNS, NAT and more.',topics:['DHCP DORA process','DNS records: A, AAAA, CNAME, MX, TXT','NAT / PAT','NTP, SNMP, Syslog'],
+   lab:{t:'Small-office services',steps:['Configure a DHCP pool on the router','Point clients to a DNS server','Set up PAT to the internet','Query records with dig / nslookup'],code:'dig itraining.pages.dev A +short\nnslookup -type=MX gmail.com'},
+   quiz:{q:'Which DNS record points a domain to a mail server?',o:['A','CNAME','MX','PTR'],a:2,e:'MX records define mail exchangers for a domain.'}},
+  {t:'Wireless & troubleshooting',d:'Wi-Fi standards and a structured debugging approach.',topics:['802.11 standards, channels, bands','WPA2 vs WPA3','Bottom-up troubleshooting','ping, traceroute, netstat, iperf3'],
+   lab:{t:'Diagnose a slow network',steps:['Measure throughput with iperf3','Find the slow hop with traceroute / mtr','Check Wi-Fi channel overlap','Write a findings report']},
+   quiz:{q:'Which tool shows each hop to a destination?',o:['ping','traceroute','arp','ipconfig'],a:1,e:'traceroute (tracert on Windows) lists each router on the path.'}}
+ ]},
+{
+ id:'cybersecurity', key:'sec', title:'Cybersecurity', level:'Intermediate', weeks:12,
+ summary:'Defend systems and networks: threats, hardening, cryptography, identity, monitoring, incident response and ethical hacking basics.',
+ outcomes:['Harden Linux and Windows hosts','Detect attacks with logs and a SIEM','Run an authorized vulnerability assessment','Respond to an incident with a playbook'],
+ certs:['CompTIA Security+','ISC2 CC','eJPT'],
+ tools:['Kali Linux','nmap','Burp Suite CE','Wazuh','Wireshark','OpenVAS'],
+ modules:[
+  {t:'Security foundations',d:'CIA triad, risk and the threat landscape.',topics:['Confidentiality, integrity, availability','Threats, vulnerabilities, risk','Attack types: phishing, malware, ransomware','Security frameworks: NIST CSF, ISO 27001'],
+   lab:{t:'Risk register for a small business',steps:['List 10 assets','Identify threats and vulnerabilities','Score likelihood × impact','Propose controls']},
+   quiz:{q:'Ransomware mainly attacks which CIA property?',o:['Confidentiality only','Availability','Non-repudiation','None'],a:1,e:'Encrypting data makes it unavailable; modern ransomware may also steal it.'}},
+  {t:'Cryptography & PKI',d:'Protecting data at rest and in transit.',topics:['Symmetric (AES) vs asymmetric (RSA, ECC)','Hashing and salting (SHA-256, bcrypt)','Certificates, CAs and TLS','Digital signatures'],
+   lab:{t:'Work with OpenSSL',steps:['Generate a key pair','Create a CSR and a self-signed cert','Encrypt / decrypt a file','Inspect a site\'s TLS certificate'],code:'openssl genrsa -out key.pem 2048\nopenssl req -new -x509 -key key.pem -out cert.pem -days 365\nopenssl s_client -connect example.com:443 -servername example.com'},
+   quiz:{q:'Which is best for storing passwords?',o:['AES encryption','MD5 hash','bcrypt / Argon2','Base64'],a:2,e:'Slow, salted hashing algorithms like bcrypt or Argon2 resist brute force.'}},
+  {t:'Identity & access management',d:'Who can do what, and how we prove it.',topics:['Authentication factors and MFA','Least privilege and RBAC','SSO, SAML, OAuth2, OIDC','Password policies and PAM'],
+   lab:{t:'Least-privilege setup',steps:['Create Linux groups and users','Restrict sudo to specific commands','Enforce MFA on a cloud account','Audit permissions']},
+   quiz:{q:'Password + SMS code is an example of…',o:['Single factor','Multi-factor','Biometrics only','SSO'],a:1,e:'Something you know + something you have = MFA.'}},
+  {t:'System & network hardening',d:'Reduce the attack surface.',topics:['Patch management','Firewalls: ufw, iptables, Windows Defender Firewall','SSH hardening','CIS Benchmarks'],
+   lab:{t:'Harden an Ubuntu server',steps:['Disable root and password SSH login','Enable ufw, allow only needed ports','Install fail2ban','Scan before/after with nmap'],code:'sudo ufw default deny incoming\nsudo ufw allow 22/tcp\nsudo ufw enable\n# /etc/ssh/sshd_config\nPermitRootLogin no\nPasswordAuthentication no'},
+   quiz:{q:'Default firewall policy for inbound traffic should be…',o:['Allow all','Deny all, allow by exception','Log only','Random'],a:1,e:'Default-deny with explicit allows minimizes exposure.'}},
+  {t:'Monitoring, SIEM & incident response',d:'Detect and respond.',topics:['Log sources and centralization','SIEM rules and alerts (Wazuh)','IR lifecycle: prepare, detect, contain, eradicate, recover, lessons','MITRE ATT&CK'],
+   lab:{t:'Detect brute force with Wazuh',steps:['Deploy Wazuh in Docker','Enroll a Linux agent','Simulate SSH brute force (in your lab only)','Triage the alert and write an IR report']},
+   quiz:{q:'Which IR phase comes right after detection?',o:['Recovery','Containment','Lessons learned','Preparation'],a:1,e:'Contain first to stop the spread, then eradicate and recover.'}},
+  {t:'Ethical hacking & vulnerability assessment',d:'Think like an attacker — legally.',topics:['Rules of engagement and written authorization','Reconnaissance and scanning','Web vulnerabilities: OWASP Top 10','Reporting and remediation'],
+   lab:{t:'Assess an intentionally vulnerable app',steps:['Run DVWA or OWASP Juice Shop locally','Scan with nmap and OpenVAS','Find and document 3 OWASP issues','Recommend fixes'],code:'docker run -d -p 3000:3000 bkimminich/juice-shop\nnmap -sV -p- 127.0.0.1'},
+   quiz:{q:'Before testing any system you must have…',o:['A fast laptop','Written authorization','Kali Linux','A VPN'],a:1,e:'Testing without permission is illegal. Always get written scope and authorization.'}}
+ ]},
+{
+ id:'cloud', key:'cloud', title:'Cloud Computing', level:'Intermediate', weeks:10,
+ summary:'Design, deploy and secure workloads on AWS, Azure and edge platforms. Infrastructure as code, containers and serverless.',
+ outcomes:['Explain IaaS / PaaS / SaaS and shared responsibility','Deploy VMs, storage and networks on AWS','Ship serverless APIs and containers','Automate infrastructure with Terraform'],
+ certs:['AWS Cloud Practitioner','AWS Solutions Architect – Associate','Microsoft AZ-900'],
+ tools:['AWS Free Tier','Azure CLI','Terraform','Docker','Cloudflare Pages / Workers'],
+ modules:[
+  {t:'Cloud concepts',d:'Models, economics and the shared responsibility model.',topics:['IaaS, PaaS, SaaS, FaaS','Public, private, hybrid, multi-cloud','Regions, availability zones, edge','Pricing, free tiers, budgets'],
+   lab:{t:'Set up a safe cloud account',steps:['Create an AWS Free Tier account','Enable MFA on root, create an admin IAM user','Set a $5 budget alert','Tour the console']},
+   quiz:{q:'In IaaS, who patches the guest OS?',o:['The cloud provider','The customer','Nobody','The ISP'],a:1,e:'With IaaS the customer manages the OS and above.'}},
+  {t:'Compute & storage',d:'Virtual machines and object storage.',topics:['EC2 instance types, AMIs, key pairs','Auto Scaling and load balancers','S3 storage classes and lifecycle','EBS vs EFS vs S3'],
+   lab:{t:'Host a static site on S3',steps:['Create a bucket and upload files','Enable static website hosting','Add CloudFront in front','Set a lifecycle rule'],code:'aws s3 mb s3://my-itraining-site\naws s3 sync ./site s3://my-itraining-site\naws s3 website s3://my-itraining-site --index-document index.html'},
+   quiz:{q:'Which AWS service is object storage?',o:['EBS','S3','EC2','RDS'],a:1,e:'S3 stores objects; EBS is block storage for EC2.'}},
+  {t:'Cloud networking & security',d:'VPCs, IAM and protecting workloads.',topics:['VPC, subnets, route tables, gateways','Security groups vs NACLs','IAM policies and roles','Encryption with KMS'],
+   lab:{t:'Build a two-tier VPC',steps:['Create public and private subnets','Add an internet gateway and NAT','Place a web server in public, DB in private','Restrict with security groups']},
+   quiz:{q:'Security groups are…',o:['Stateless','Stateful','Only for S3','Only outbound'],a:1,e:'Security groups are stateful: return traffic is allowed automatically.'}},
+  {t:'Serverless & APIs',d:'Run code without managing servers.',topics:['AWS Lambda and API Gateway','DynamoDB basics','Cloudflare Workers at the edge','Event-driven design'],
+   lab:{t:'Serverless contact API',steps:['Write a Lambda in Python','Expose it with API Gateway + API key','Store messages in DynamoDB','Monitor with CloudWatch'],code:'import json, boto3\ntable = boto3.resource("dynamodb").Table("messages")\ndef handler(event, ctx):\n    body = json.loads(event["body"])\n    table.put_item(Item=body)\n    return {"statusCode": 201, "body": "saved"}'},
+   quiz:{q:'Lambda is billed mainly by…',o:['Uptime per month','Requests and execution duration','Number of users','Disk size'],a:1,e:'You pay per request and per GB-second of compute.'}},
+  {t:'Containers & orchestration',d:'Package once, run anywhere.',topics:['Dockerfiles and images','Registries (ECR, Docker Hub)','ECS / Fargate','Kubernetes concepts: pods, deployments, services'],
+   lab:{t:'Containerize and run an app',steps:['Write a Dockerfile for the course API','Push to a registry','Run on Fargate or a local kind cluster','Scale replicas'],code:'FROM python:3.12-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD ["uvicorn","main:app","--host","0.0.0.0","--port","8000"]'},
+   quiz:{q:'In Kubernetes, the smallest deployable unit is a…',o:['Node','Pod','Cluster','Namespace'],a:1,e:'A pod wraps one or more containers sharing network and storage.'}},
+  {t:'Infrastructure as code & DevOps',d:'Repeatable, reviewable infrastructure.',topics:['Terraform providers, state, modules','CloudFormation overview','GitOps and CI/CD to cloud','Cost optimization and tagging'],
+   lab:{t:'Terraform your VPC',steps:['Write Terraform for the two-tier VPC','terraform plan, then apply','Change a resource and review the diff','terraform destroy to avoid costs'],code:'resource "aws_s3_bucket" "site" {\n  bucket = "itraining-demo-bucket"\n  tags   = { project = "itraining" }\n}'},
+   quiz:{q:'Which command previews Terraform changes?',o:['terraform apply','terraform plan','terraform init','terraform fmt'],a:1,e:'plan shows what will change without applying it.'}}
+ ]}
+];
+
+const PATHS = [
+ {t:'IT Support Technician',d:'Entry-level role fixing devices and helping users.',steps:['hardware','networking','cybersecurity (modules 1–3)']},
+ {t:'Network Administrator',d:'Run and secure an organization\'s network.',steps:['hardware','networking','cybersecurity','cloud (modules 1–3)']},
+ {t:'Junior Developer',d:'Build and ship web applications and APIs.',steps:['software','cloud (modules 4–6)','cybersecurity (modules 2–3)']},
+ {t:'SOC Analyst',d:'Monitor, detect and respond to threats.',steps:['networking','cybersecurity','cloud (modules 1, 3)']},
+ {t:'Cloud / DevOps Engineer',d:'Automate infrastructure and delivery pipelines.',steps:['software','networking','cloud','cybersecurity (modules 3–4)']}
+];
+
+/* ---------- STATE ---------- */
+const KEY='itraining.progress.v1';
+let progress={};
+try{progress=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){progress={}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(progress))}catch(e){}};
+const done=(tid,i)=>!!(progress[tid]&&progress[tid][i]);
+const pct=t=>Math.round(100*t.modules.filter((_,i)=>done(t.id,i)).length/t.modules.length);
+const accent=t=>`var(--${t.key})`;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- VIEWS ---------- */
+const app=document.getElementById('app');
+let filter={q:'',lvl:'All'};
+
+function trackCard(t){
+ const p=pct(t);
+ return `<a class="card" href="#/track/${t.id}" style="--accent:${accent(t)}">
+  <div class="ic">${ICON[t.key]}</div>
+  <h3>${esc(t.title)}</h3>
+  <p>${esc(t.summary)}</p>
+  <div class="meta"><span>${ICON.clock}${t.weeks} weeks</span><span>${ICON.book}${t.modules.length} modules</span><span>${ICON.flask}${t.modules.length} labs</span></div>
+  <div><span class="tag">${esc(t.level)}</span></div>
+  <div class="bar" aria-label="${p}% complete"><i style="width:${p}%"></i></div>
+ </a>`;
+}
+
+function home(){
+ const total=TRACKS.reduce((a,t)=>a+t.modules.length,0);
+ const hours=TRACKS.reduce((a,t)=>a+t.weeks,0)*6;
+ app.innerHTML=`
+ <section class="hero"><div class="wrap">
+  <h1>Practical tech skills, <em>learned by doing.</em></h1>
+  <p class="lead">Free training programs in hardware, software, networking, cybersecurity and cloud — each module ends in a hands-on lab and a quick check.</p>
+  <div class="cta"><a class="btn primary" href="#programs">Browse programs</a><a class="btn ghost" href="#/paths">Pick a career path</a></div>
+  <div class="stats">
+   <div class="stat"><b>${TRACKS.length}</b><span>Programs</span></div>
+   <div class="stat"><b>${total}</b><span>Modules</span></div>
+   <div class="stat"><b>${total}</b><span>Hands-on labs</span></div>
+   <div class="stat"><b>~${hours}h</b><span>Of guided learning</span></div>
+  </div>
+ </div></section>
+ <section class="block" id="programs"><div class="wrap">
+  <div class="sec-head">
+   <div><h2>Programs</h2><p>Start anywhere — each program is self-contained.</p></div>
+   <div class="filters">
+    <label class="sr" for="q">Search</label>
+    <input id="q" class="search" placeholder="Search topics, tools, certs…" value="${esc(filter.q)}">
+    ${['All','Beginner','Intermediate'].map(l=>`<button class="chip ${filter.lvl===l?'on':''}" data-lvl="${l}">${l}</button>`).join('')}
+   </div>
+  </div>
+  <div class="grid" id="grid"></div>
+ </div></section>`;
+ const draw=()=>{
+  const q=filter.q.toLowerCase();
+  const list=TRACKS.filter(t=>(filter.lvl==='All'||t.level.includes(filter.lvl))&&
+   (!q||JSON.stringify(t).toLowerCase().includes(q)));
+  document.getElementById('grid').innerHTML=list.length?list.map(trackCard).join(''):'<div class="empty">No program matches that search.</div>';
+ };
+ draw();
+ document.getElementById('q').addEventListener('input',e=>{filter.q=e.target.value;draw()});
+ app.querySelectorAll('[data-lvl]').forEach(b=>b.onclick=()=>{filter.lvl=b.dataset.lvl;app.querySelectorAll('[data-lvl]').forEach(x=>x.classList.toggle('on',x===b));draw()});
+}
+
+function track(id){
+ const t=TRACKS.find(x=>x.id===id);
+ if(!t){app.innerHTML='<div class="wrap"><p class="empty" style="margin:40px 0">Program not found. <a href="#/">Back to programs</a></p></div>';return}
+ const p=pct(t);
+ app.innerHTML=`<div class="wrap" style="--accent:${accent(t)}">
+  <div class="crumb"><a href="#/">Programs</a> / ${esc(t.title)}</div>
+  <div class="thead">
+   <div>
+    <span class="tag">${esc(t.level)} · ${t.weeks} weeks · ~6 h/week</span>
+    <h1>${esc(t.title)}</h1>
+    <p class="desc">${esc(t.summary)}</p>
+    <div class="panel"><h5>You will be able to</h5><ul>${t.outcomes.map(o=>`<li>${esc(o)}</li>`).join('')}</ul></div>
+   </div>
+   <aside class="panel">
+    <h5>Your progress</h5>
+    <div class="progress-big"><b id="pp">${p}%</b><span style="color:var(--muted)">complete</span></div>
+    <div class="bar"><i id="pb" style="width:${p}%"></i></div>
+    <h5 style="margin-top:18px">Prepares for</h5><ul>${t.certs.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+    <h5 style="margin-top:18px">Tools you'll use</h5><ul>${t.tools.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+   </aside>
+  </div>
+  <div class="modules">${t.modules.map((m,i)=>moduleHTML(t,m,i)).join('')}</div>
+  <div id="certBox"></div>
+ </div>`;
+ bindModules(t);
+ certBox(t);
+}
+
+function moduleHTML(t,m,i){
+ const d=done(t.id,i);
+ return `<details class="mod ${d?'done':''}" data-i="${i}" ${i===0&&!d?'open':''}>
+  <summary><span class="num">${d?'✓':i+1}</span><span class="mt"><b>${esc(m.t)}</b><small>${esc(m.d)}</small></span>${ICON.chev}</summary>
+  <div class="body">
+   <div><h6>Topics</h6><ul>${m.topics.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+   <div class="lab"><b>${ICON.flask} Lab: ${esc(m.lab.t)}</b><ol>${m.lab.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>${m.lab.code?`<pre><code>${esc(m.lab.code)}</code></pre>`:''}</div>
+   <div class="quiz"><div class="q">Check: ${esc(m.quiz.q)}</div><div class="opts">${m.quiz.o.map((o,k)=>`<button data-k="${k}">${esc(o)}</button>`).join('')}</div><div class="fb"></div></div>
+   <div class="mod-actions"><button class="btn ${d?'ghost':'primary'} sm" data-toggle>${d?'Mark as not done':'Mark module complete'}</button></div>
+  </div>
+ </details>`;
+}
+
+function bindModules(t){
+ app.querySelectorAll('.mod').forEach(el=>{
+  const i=+el.dataset.i, m=t.modules[i];
+  el.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{
+   const k=+b.dataset.k, ok=k===m.quiz.a;
+   el.querySelectorAll('.opts button').forEach(x=>x.classList.remove('right','wrong'));
+   b.classList.add(ok?'right':'wrong');
+   if(!ok) el.querySelector(`.opts button[data-k="${m.quiz.a}"]`).classList.add('right');
+   el.querySelector('.fb').textContent=(ok?'Correct. ':'Not quite. ')+m.quiz.e;
+  });
+  el.querySelector('[data-toggle]').onclick=()=>{
+   progress[t.id]=progress[t.id]||{};
+   progress[t.id][i]=!progress[t.id][i]; save();
+   const wasOpen=el.open;
+   el.outerHTML=moduleHTML(t,m,i);
+   const n=app.querySelector(`.mod[data-i="${i}"]`); n.open=wasOpen;
+   bindModules(t);
+   const p=pct(t); document.getElementById('pp').textContent=p+'%'; document.getElementById('pb').style.width=p+'%';
+   certBox(t);
+  };
+ });
+}
+
+function certBox(t){
+ const box=document.getElementById('certBox'); if(!box) return;
+ box.innerHTML=pct(t)===100?`<div class="cert"><h3>🎓 Program complete</h3><p style="color:var(--muted);margin:0">You've finished every module of <b>${esc(t.title)}</b>. Next step: book the ${esc(t.certs[0])} exam or start another program.</p></div>`:'';
+}
+
+function paths(){
+ const name=s=>{const id=s.split(' ')[0];const t=TRACKS.find(x=>x.id===id);return t?`<a href="#/track/${t.id}">${esc(t.title)}</a>${esc(s.slice(id.length))}`:esc(s)};
+ app.innerHTML=`<section class="block"><div class="wrap">
+  <div class="sec-head"><div><h2>Career paths</h2><p>Recommended program order for common entry-level IT roles.</p></div></div>
+  <div class="paths">${PATHS.map(p=>`<div class="path"><h4>${esc(p.t)}</h4><p>${esc(p.d)}</p><ol>${p.steps.map(s=>`<li>${name(s)}</li>`).join('')}</ol></div>`).join('')}</div>
+ </div></section>`;
+}
+
+function dash(){
+ const any=TRACKS.some(t=>pct(t)>0);
+ app.innerHTML=`<section class="block"><div class="wrap">
+  <div class="sec-head"><div><h2>My progress</h2><p>Saved in this browser only.</p></div>
+   ${any?'<button class="btn ghost sm" id="reset">Reset progress</button>':''}</div>
+  ${any?'':'<div class="empty" style="margin-bottom:16px">You haven\'t completed any modules yet. <a href="#/">Pick a program</a> to begin.</div>'}
+  <div class="grid">${TRACKS.map(trackCard).join('')}</div>
+ </div></section>`;
+ const r=document.getElementById('reset');
+ if(r) r.onclick=()=>{if(confirm('Clear all progress?')){progress={};save();dash()}};
+}
+
+/* ---------- ROUTER ---------- */
+function route(){
+ const h=location.hash||'#/';
+ if(h==='#programs'){ if(!document.getElementById('programs')) home(); document.getElementById('programs').scrollIntoView({behavior:'smooth'}); return; }
+ const [,a,b]=h.split('/');
+ document.querySelectorAll('[data-nav]').forEach(x=>x.classList.toggle('on',x.dataset.nav===(a||'home')));
+ if(a==='track') track(b);
+ else if(a==='paths') paths();
+ else if(a==='progress') dash();
+ else home();
+ window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+route();
+
+/* ---------- THEME ---------- */
+const themeBtn=document.getElementById('themeBtn');
+try{const th=localStorage.getItem('itraining.theme');if(th)document.documentElement.dataset.theme=th}catch(e){}
+themeBtn.onclick=()=>{
+ const cur=document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+ const next=cur==='dark'?'light':'dark';
+ document.documentElement.dataset.theme=next;
+ try{localStorage.setItem('itraining.theme',next)}catch(e){}
+};
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
