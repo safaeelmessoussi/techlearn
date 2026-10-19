@@ -12,17 +12,17 @@
 :root{
   --bg:#f7f8fa;--surface:#fff;--surface-2:#f1f3f6;--text:#0f172a;--muted:#5b6475;--line:#e3e7ee;
   --brand:#0f766e;--brand-2:#14b8a6;--brand-ink:#fff;--warn:#b45309;--ok:#15803d;
-  --hw:#c2410c;--sw:#4f46e5;--net:#0369a1;--sec:#be123c;--cloud:#7c3aed;
+  --fd:#b45309;--hw:#c2410c;--sw:#4f46e5;--net:#0369a1;--sec:#be123c;--cloud:#7c3aed;
   --radius:14px;--shadow:0 1px 2px rgba(15,23,42,.05),0 4px 16px rgba(15,23,42,.06);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0b1020;--surface:#121a2e;--surface-2:#18213a;--text:#e6ebf5;--muted:#9aa5bd;--line:#243051;
   --brand:#2dd4bf;--brand-2:#5eead4;--brand-ink:#04201d;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
-  --hw:#fb923c;--sw:#818cf8;--net:#38bdf8;--sec:#fb7185;--cloud:#a78bfa;}}
+  --fd:#fbbf24;--hw:#fb923c;--sw:#818cf8;--net:#38bdf8;--sec:#fb7185;--cloud:#a78bfa;}}
 :root[data-theme="dark"]{
   --bg:#0b1020;--surface:#121a2e;--surface-2:#18213a;--text:#e6ebf5;--muted:#9aa5bd;--line:#243051;
   --brand:#2dd4bf;--brand-2:#5eead4;--brand-ink:#04201d;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
-  --hw:#fb923c;--sw:#818cf8;--net:#38bdf8;--sec:#fb7185;--cloud:#a78bfa;}
+  --fd:#fbbf24;--hw:#fb923c;--sw:#818cf8;--net:#38bdf8;--sec:#fb7185;--cloud:#a78bfa;}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -75,6 +75,8 @@ section.block{padding:32px 0}
 .meta span{display:inline-flex;align-items:center;gap:5px}
 .bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--accent,var(--brand));border-radius:99px;transition:width .3s}
+.card.start{border-width:2px;border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.tag.start-tag{background:color-mix(in srgb,var(--fd) 16%,transparent);color:var(--fd)}
 .tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted)}
 
 .paths{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
@@ -162,6 +164,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <script>
 /* ---------- ICONS ---------- */
 const ICON = {
+  fd:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg>',
   hw:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>',
   sw:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>',
   net:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-2h14v2M12 12v3"/></svg>',
@@ -175,6 +178,13 @@ const ICON = {
 
 /* ---------- CURRICULUM ---------- */
 const TRACKS = [
+{
+ id:'foundations', key:'fd', page:'foundations.html', chapters:11, start:true,
+ title:'How a Computer Really Works', level:'Beginner', weeks:2,
+ summary:'Start here, no knowledge needed. Explore a computer as a restaurant kitchen and follow your data from the keyboard, into binary, onto the disk and back to your screen.',
+ outcomes:['Name every part of a computer and what it does','Create folders and files with the mouse and with the terminal','Explain how text becomes binary and is saved','Understand how a web page goes from code to screen'],
+ certs:['Foundation for CompTIA ITF+ / A+'], tools:['Your browser'], modules:[]
+},
 {
  id:'hardware', key:'hw', title:'Computer Hardware & IT Support', level:'Beginner', weeks:8,
  summary:'Build, diagnose and repair PCs and laptops. Learn components, peripherals, troubleshooting methodology and help-desk practice.',
@@ -308,11 +318,11 @@ const TRACKS = [
 ];
 
 const PATHS = [
- {t:'IT Support Technician',d:'Entry-level role fixing devices and helping users.',steps:['hardware','networking','cybersecurity (modules 1–3)']},
- {t:'Network Administrator',d:'Run and secure an organization\'s network.',steps:['hardware','networking','cybersecurity','cloud (modules 1–3)']},
- {t:'Junior Developer',d:'Build and ship web applications and APIs.',steps:['software','cloud (modules 4–6)','cybersecurity (modules 2–3)']},
- {t:'SOC Analyst',d:'Monitor, detect and respond to threats.',steps:['networking','cybersecurity','cloud (modules 1, 3)']},
- {t:'Cloud / DevOps Engineer',d:'Automate infrastructure and delivery pipelines.',steps:['software','networking','cloud','cybersecurity (modules 3–4)']}
+ {t:'IT Support Technician',d:'Entry-level role fixing devices and helping users.',steps:['foundations','hardware','networking','cybersecurity (modules 1–3)']},
+ {t:'Network Administrator',d:'Run and secure an organization\'s network.',steps:['foundations','hardware','networking','cybersecurity','cloud (modules 1–3)']},
+ {t:'Junior Developer',d:'Build and ship web applications and APIs.',steps:['foundations','software','cloud (modules 4–6)','cybersecurity (modules 2–3)']},
+ {t:'SOC Analyst',d:'Monitor, detect and respond to threats.',steps:['foundations','networking','cybersecurity','cloud (modules 1, 3)']},
+ {t:'Cloud / DevOps Engineer',d:'Automate infrastructure and delivery pipelines.',steps:['foundations','software','networking','cloud','cybersecurity (modules 3–4)']}
 ];
 
 /* ---------- STATE ---------- */
@@ -321,7 +331,7 @@ let progress={};
 try{progress=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){progress={}}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(progress))}catch(e){}};
 const done=(tid,i)=>!!(progress[tid]&&progress[tid][i]);
-const pct=t=>Math.round(100*t.modules.filter((_,i)=>done(t.id,i)).length/t.modules.length);
+const pct=t=>t.page?Math.min(100,Math.round(100*Object.keys(progress[t.id]||{}).length/t.chapters)):Math.round(100*t.modules.filter((_,i)=>done(t.id,i)).length/t.modules.length);
 const accent=t=>`var(--${t.key})`;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -331,18 +341,18 @@ let filter={q:'',lvl:'All'};
 
 function trackCard(t){
  const p=pct(t);
- return `<a class="card" href="#/track/${t.id}" style="--accent:${accent(t)}">
+ return `<a class="card${t.start?' start':''}" href="${t.page||'#/track/'+t.id}" style="--accent:${accent(t)}">
   <div class="ic">${ICON[t.key]}</div>
   <h3>${esc(t.title)}</h3>
   <p>${esc(t.summary)}</p>
-  <div class="meta"><span>${ICON.clock}${t.weeks} weeks</span><span>${ICON.book}${t.modules.length} modules</span><span>${ICON.flask}${t.modules.length} labs</span></div>
-  <div><span class="tag">${esc(t.level)}</span></div>
+  <div class="meta">${t.page?`<span>${ICON.book}${t.chapters} interactive chapters</span><span>${ICON.flask}Live simulations</span>`:`<span>${ICON.clock}${t.weeks} weeks</span><span>${ICON.book}${t.modules.length} modules</span><span>${ICON.flask}${t.modules.length} labs</span>`}</div>
+  <div><span class="tag">${esc(t.level)}</span>${t.start?' <span class="tag start-tag">Start here</span>':''}</div>
   <div class="bar" aria-label="${p}% complete"><i style="width:${p}%"></i></div>
  </a>`;
 }
 
 function home(){
- const total=TRACKS.reduce((a,t)=>a+t.modules.length,0);
+ const total=TRACKS.reduce((a,t)=>a+(t.page?t.chapters:t.modules.length),0);
  const hours=TRACKS.reduce((a,t)=>a+t.weeks,0)*6;
  app.innerHTML=`
  <section class="hero"><div class="wrap">
@@ -473,7 +483,7 @@ function route(){
  if(h==='#programs'){ if(!document.getElementById('programs')) home(); document.getElementById('programs').scrollIntoView({behavior:'smooth'}); return; }
  const [,a,b]=h.split('/');
  document.querySelectorAll('[data-nav]').forEach(x=>x.classList.toggle('on',x.dataset.nav===(a||'home')));
- if(a==='track') track(b);
+ if(a==='track'){const t=TRACKS.find(x=>x.id===b); if(t&&t.page){location.href=t.page;return} track(b);}
  else if(a==='paths') paths();
  else if(a==='progress') dash();
  else home();

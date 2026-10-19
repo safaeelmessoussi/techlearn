@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How a Computer Really Works — iTraining</title>
+<meta name="description" content="A visual, zero-knowledge introduction to computers: the kitchen analogy, files and folders, binary, saving, opening and web pages.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230f766e'/><text x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'>i</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f8fa;--surface:#fff;--surface-2:#f1f3f6;--text:#0f172a;--muted:#5b6475;--line:#e3e7ee;
+  --brand:#0f766e;--brand-ink:#fff;--warn:#b45309;--ok:#15803d;--bad:#be123c;
+  --in:#2563eb;--out:#ea580c;--data:#0d9488;--pow:#ca8a04;--air:#0284c7;
+  --stroke:#94a3b8;--case:#eef1f6;--board:#e6f2ec;--bay:#f3efe6;--key:#e2e8f0;
+  --radius:14px;--shadow:0 1px 2px rgba(15,23,42,.05),0 4px 16px rgba(15,23,42,.06);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b1020;--surface:#121a2e;--surface-2:#18213a;--text:#e6ebf5;--muted:#9aa5bd;--line:#243051;
+  --brand:#2dd4bf;--brand-ink:#04201d;--warn:#fbbf24;--ok:#4ade80;--bad:#fb7185;
+  --in:#60a5fa;--out:#fb923c;--data:#2dd4bf;--pow:#facc15;--air:#38bdf8;
+  --stroke:#4b5a7c;--case:#111a2f;--board:#122a22;--bay:#2a2418;--key:#26314d;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);}}
+:root[data-theme="dark"]{
+  --bg:#0b1020;--surface:#121a2e;--surface-2:#18213a;--text:#e6ebf5;--muted:#9aa5bd;--line:#243051;
+  --brand:#2dd4bf;--brand-ink:#04201d;--warn:#fbbf24;--ok:#4ade80;--bad:#fb7185;
+  --in:#60a5fa;--out:#fb923c;--data:#2dd4bf;--pow:#facc15;--air:#38bdf8;
+  --stroke:#4b5a7c;--case:#111a2f;--board:#122a22;--bay:#2a2418;--key:#26314d;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;cursor:pointer;color:inherit}
+code,kbd,.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.88em}
+kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--surface)}
+.full{padding:0 28px}
+@media(max-width:640px){.full{padding:0 16px}}
+
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:16px;height:62px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;font-size:1.15rem;letter-spacing:-.02em}
+.logo span.mark{width:32px;height:32px;border-radius:9px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center}
+.nav .links{display:flex;gap:4px;margin-left:auto}
+.nav .links a{text-decoration:none;color:var(--muted);padding:8px 12px;border-radius:8px;font-weight:500;font-size:.95rem}
+.nav .links a:hover{color:var(--text);background:var(--surface-2)}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:9px;width:38px;height:38px;display:grid;place-items:center}
+
+.intro{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;padding:22px 0 14px}
+.intro h1{margin:0;font-size:clamp(1.6rem,3.4vw,2.4rem);letter-spacing:-.03em;line-height:1.1}
+.intro p{margin:6px 0 0;color:var(--muted);max-width:760px}
+.layers{display:flex;gap:6px;flex-wrap:wrap}
+.layer{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.82rem;color:var(--muted);font-weight:500}
+.layer.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.layer.soon{opacity:.6;border-style:dashed}
+
+.chapters{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:thin}
+.ch{flex:none;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px 7px 8px;font-size:.88rem;font-weight:500;color:var(--muted)}
+.ch b{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:var(--surface-2);font-size:.78rem;color:var(--text)}
+.ch.seen b{background:color-mix(in srgb,var(--brand) 18%,transparent);color:var(--brand)}
+.ch.on{border-color:var(--brand);color:var(--text);box-shadow:0 0 0 2px color-mix(in srgb,var(--brand) 25%,transparent)}
+.ch.on b{background:var(--brand);color:var(--brand-ink)}
+
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:18px;align-items:start}
+@media(max-width:1200px){.stage{grid-template-columns:1fr}}
+.scene-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:10px;position:relative}
+.scene-tools{position:absolute;top:16px;right:18px;display:flex;gap:6px;z-index:2}
+svg.scene{width:100%;height:auto;display:block}
+@media(max-width:760px){.scene-card{overflow-x:auto;-webkit-overflow-scrolling:touch}svg.scene{min-width:900px}.scene-card::after{content:'← swipe to explore the drawing →';display:block;text-align:center;font-size:.8rem;color:var(--muted);position:sticky;left:0;padding-top:4px}}
+.nav .links a{white-space:nowrap}
+@media(max-width:480px){.nav .links a:first-child{display:none}}
+.side{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;position:sticky;top:76px;max-height:calc(100vh - 92px);overflow:auto}
+@media(max-width:1200px){.side{position:static;max-height:none}}
+.side .kicker{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);font-weight:700}
+.side h2{margin:4px 0 10px;font-size:1.45rem;letter-spacing:-.02em;line-height:1.2}
+.side p{margin:0 0 12px}
+.side ul,.side ol{margin:0 0 12px;padding-left:20px}
+.side li{margin:3px 0}
+.navbtns{display:flex;justify-content:space-between;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 16px;font-weight:600;border:1px solid transparent;text-decoration:none;background:none}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}
+.btn.ghost{border-color:var(--line);background:var(--surface)}
+.btn.warn{background:color-mix(in srgb,var(--bad) 14%,transparent);border-color:color-mix(in srgb,var(--bad) 40%,transparent);color:var(--bad)}
+.btn.sm{padding:6px 11px;font-size:.88rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.note{border-left:4px solid var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent);border-radius:0 10px 10px 0;padding:10px 14px;margin:0 0 12px;font-size:.95rem}
+.note.fix{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,transparent)}
+.note.good{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 9%,transparent)}
+.note b:first-child{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+
+.info{border:2px solid var(--brand);border-radius:12px;padding:14px 16px;margin-bottom:16px;position:relative;background:color-mix(in srgb,var(--brand) 5%,var(--surface))}
+.info .x{position:absolute;top:8px;right:8px;border:0;background:var(--surface-2);border-radius:8px;width:28px;height:28px}
+.info h3{margin:0 0 2px;font-size:1.1rem;padding-right:30px}
+.info .role{color:var(--brand);font-weight:700;margin-bottom:8px}
+.info dl{margin:0;display:grid;gap:8px}
+.info dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.info dd{margin:0;font-size:.95rem}
+
+/* SVG scene */
+.p{fill:var(--surface);stroke:var(--stroke);stroke-width:2}
+.p2{fill:var(--surface-2);stroke:var(--stroke);stroke-width:1.5}
+.case{fill:var(--case);stroke:var(--stroke);stroke-width:3}
+.board{fill:var(--board);stroke:color-mix(in srgb,var(--ok) 40%,var(--stroke));stroke-width:1.5}
+.bay{fill:var(--bay);stroke:var(--stroke);stroke-width:1.5}
+.keycap{fill:var(--key)}
+.desk{fill:color-mix(in srgb,var(--warn) 30%,var(--surface-2))}
+.wire{fill:none;stroke:var(--stroke);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+.trace{fill:none;stroke:color-mix(in srgb,var(--ok) 45%,var(--stroke));stroke-width:2;stroke-dasharray:2 5;opacity:.7}
+.t-lbl{font:700 14px Inter,sans-serif;fill:var(--text);letter-spacing:.02em}
+.t-sub{font:500 12.5px Inter,sans-serif;fill:var(--muted)}
+.t-big{font:800 18px Inter,sans-serif;fill:var(--text)}
+.t-emo{font-size:30px}
+.part{cursor:pointer;transition:opacity .35s}
+.part:hover .p,.part:hover .p2{stroke:var(--brand)}
+.scene.focus .part:not(.hl){opacity:.25}
+.part.hl .p{stroke:var(--brand);stroke-width:3}
+.part.in.hl .p{stroke:var(--in)}
+.part.out.hl .p{stroke:var(--out)}
+.part.sel .p{stroke:var(--warn)!important;stroke-width:4}
+.part:focus{outline:none}
+.part:focus-visible .p{stroke:var(--warn);stroke-width:4}
+.blades{transform-box:fill-box;transform-origin:center;animation:spin var(--fan,1.4s) linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.route{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;opacity:.28}
+.dot{stroke:var(--surface);stroke-width:2}
+.c-in{stroke:var(--in)}.f-in{fill:var(--in)}
+.c-out{stroke:var(--out)}.f-out{fill:var(--out)}
+.c-data{stroke:var(--data)}.f-data{fill:var(--data)}
+.c-pow{stroke:var(--pow)}.f-pow{fill:var(--pow)}
+.c-air{stroke:var(--air)}.f-air{fill:var(--air)}
+.legend-sw{rx:3}
+.heat{transition:opacity .4s}
+@media (prefers-reduced-motion:reduce){.blades{animation:none}}
+
+/* screen inside monitor */
+#screen{width:460px;height:270px;position:relative;overflow:hidden;font:11px/1.35 "Segoe UI",Inter,system-ui,sans-serif;color:#fff;background:linear-gradient(135deg,#1e3a8a,#0f766e 70%,#155e75);user-select:none}
+#screen.off{background:#000}
+#screen.off>*{display:none}
+#screen .ico{position:absolute;width:76px;text-align:center;font-size:10.5px;text-shadow:0 1px 2px rgba(0,0,0,.6);padding:4px 2px;border-radius:4px}
+#screen .ico .g{font-size:30px;line-height:1.1;display:block}
+#screen .ico.new{animation:pop .5s ease}
+#screen .ico.sel{background:rgba(255,255,255,.22);outline:1px solid rgba(255,255,255,.5)}
+@keyframes pop{0%{transform:scale(.2);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+#screen .task{position:absolute;left:0;right:0;bottom:0;height:24px;background:rgba(15,23,42,.88);display:flex;align-items:center;gap:8px;padding:0 8px;font-size:10px}
+#screen .task .start{width:16px;height:16px;display:grid;grid-template-columns:1fr 1fr;gap:1.5px}
+#screen .task .start i{background:#60a5fa}
+#screen .task .clk{margin-left:auto;opacity:.85}
+#screen .task .tb{padding:2px 6px;border-radius:3px;background:rgba(255,255,255,.12)}
+#screen .win{position:absolute;left:16px;right:16px;top:10px;bottom:32px;background:#fff;color:#111;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.45);display:flex;flex-direction:column;overflow:hidden;animation:pop .35s ease}
+#screen .bar{height:22px;display:flex;align-items:center;gap:6px;padding:0 8px;font-size:10px;flex:none}
+#screen .bar .dots{margin-left:auto;letter-spacing:6px;opacity:.8}
+#screen .w-word .bar{background:#2b579a;color:#fff}
+#screen .w-exp .bar,#screen .w-br .bar{background:#f1f3f6;color:#111;border-bottom:1px solid #dde1e7}
+#screen .ribbon{height:18px;background:#f3f4f6;border-bottom:1px solid #e5e7eb;display:flex;gap:10px;align-items:center;padding:0 8px;font-size:9px;color:#374151}
+#screen .docbg{flex:1;background:#e7e9ee;padding:8px 40px;overflow:hidden}
+#screen .paper{background:#fff;height:100%;padding:12px 16px;font-family:Calibri,Carlito,"Segoe UI",sans-serif;font-size:12px;white-space:pre-wrap;word-break:break-word;overflow:hidden;color:#111;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+#screen .caret{display:inline-block;width:1px;height:13px;background:#111;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+#screen .status{height:16px;background:#2b579a;color:#fff;font-size:9px;display:flex;align-items:center;padding:0 8px;gap:10px;flex:none}
+#screen .addr{margin:4px 8px;padding:2px 8px;border:1px solid #d1d5db;border-radius:4px;font-size:9.5px;color:#374151;background:#fff}
+#screen .files{padding:6px 10px;display:flex;flex-direction:column;gap:2px;color:#111}
+#screen .frow{display:grid;grid-template-columns:1fr 70px 80px;gap:6px;padding:3px 6px;border-radius:3px;font-size:10px}
+#screen .frow.h{color:#6b7280;border-bottom:1px solid #e5e7eb;border-radius:0}
+#screen .frow.sel{background:#dbeafe}
+#screen .empty{color:#9ca3af;padding:14px;text-align:center}
+#screen .pgwrap{flex:1;min-height:0;background:#fff;overflow:hidden}
+#screen .bsod{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:13px;text-align:center}
+
+/* lab */
+.lab{margin:18px 0 36px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.lab>h3{margin:0 0 4px;font-size:1.25rem;letter-spacing:-.01em}
+.lab>.lead{margin:0 0 16px;color:var(--muted)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:1000px){.cols,.cols3{grid-template-columns:1fr}}
+.box{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--surface-2)}
+.box h4{margin:0 0 8px;font-size:1rem}
+.box ol{margin:0;padding-left:20px}
+.box li{margin:4px 0}
+table.cast{width:100%;border-collapse:collapse;font-size:.93rem}
+table.cast th{text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 10px;border-bottom:2px solid var(--line)}
+table.cast td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.cast tr{cursor:pointer}
+table.cast tr:hover td{background:var(--surface-2)}
+.tbl-wrap{overflow-x:auto}
+.pill{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px}
+.pill.in{background:color-mix(in srgb,var(--in) 15%,transparent);color:var(--in)}
+.pill.out{background:color-mix(in srgb,var(--out) 15%,transparent);color:var(--out)}
+.pill.core{background:color-mix(in srgb,var(--data) 15%,transparent);color:var(--data)}
+.pill.fix{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+
+.term{background:#0b1020;color:#d7e3ff;font:13px/1.5 "JetBrains Mono",monospace;border-radius:12px;padding:12px 14px;height:300px;overflow:auto;cursor:text;border:1px solid #1e293b}
+.term .ln{white-space:pre-wrap;word-break:break-all}
+.term .pr{color:#5eead4}
+.term .er{color:#fda4af}
+.term .ok{color:#86efac}
+.term .dim{color:#7d8bb0}
+.term .inrow{display:flex}
+.term input{flex:1;background:none;border:0;outline:none;color:inherit;font:inherit;padding:0;margin-left:6px;min-width:0}
+.tasks{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
+.tasks li{display:flex;gap:8px;align-items:flex-start;font-size:.93rem}
+.tasks li .ck{flex:none;width:20px;height:20px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;font-size:.75rem;margin-top:2px}
+.tasks li.done .ck{background:var(--ok);border-color:var(--ok);color:#fff}
+.tasks li.done{color:var(--muted)}
+.cmdchip{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:2px 8px;font-family:"JetBrains Mono",monospace;font-size:.82rem}
+
+textarea.inp,input.inp{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:10px;padding:10px 12px;font:inherit}
+textarea.code{font:13px/1.55 "JetBrains Mono",monospace;min-height:260px;resize:vertical;tab-size:2}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stat{font-size:.9rem;color:var(--muted)}
+.stat b{color:var(--text)}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:.82rem;font-weight:600}
+.badge.unsaved{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.badge.saved{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+
+.bin{display:flex;flex-wrap:wrap;gap:10px}
+.bchar{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface);min-width:118px}
+.bchar .c{font-size:1.5rem;font-weight:700;line-height:1.1}
+.bchar .n{font-size:.78rem;color:var(--muted)}
+.bchar .byte{display:flex;gap:2px;margin-top:6px}
+.bchar .byte i{width:11px;height:16px;border-radius:2px;background:var(--surface-2);border:1px solid var(--line)}
+.bchar .byte i.on{background:var(--warn);border-color:var(--warn);box-shadow:0 0 6px color-mix(in srgb,var(--warn) 70%,transparent)}
+.bchar .bits{font:12px "JetBrains Mono",monospace;color:var(--text);margin-top:3px}
+.flowline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:600;margin:4px 0 14px}
+.flowline span.s{padding:6px 12px;border-radius:9px;background:var(--surface-2);border:1px solid var(--line)}
+.flowline span.a{color:var(--muted)}
+
+.pipe{display:grid;gap:8px;counter-reset:p}
+.pipe .st{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);transition:all .3s;opacity:.55}
+.pipe .st.on{opacity:1;border-color:var(--brand);box-shadow:0 0 0 2px color-mix(in srgb,var(--brand) 20%,transparent)}
+.pipe .st.done{opacity:1}
+.pipe .st b.n{flex:none;width:26px;height:26px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;font-size:.85rem}
+.pipe .st.done b.n,.pipe .st.on b.n{background:var(--brand);color:var(--brand-ink)}
+.pix{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);width:max-content}
+.pix i{width:13px;height:13px;display:block}
+
+.quizgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.qitem{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.qitem .nm{font-weight:600;margin-bottom:6px}
+.qitem .opts{display:flex;gap:6px}
+.qitem button{border:1px solid var(--line);background:var(--surface-2);border-radius:7px;padding:3px 9px;font-size:.82rem}
+.qitem button.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.qitem button.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.qitem .fb{font-size:.82rem;color:var(--muted);margin-top:6px;min-height:1.2em}
+
+.gauge{height:14px;border-radius:99px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+.gauge i{display:block;height:100%;transition:width .3s,background .3s}
+input[type=range]{width:100%;accent-color:var(--brand)}
+
+.next{border:1px dashed var(--line);border-radius:12px;padding:16px;background:var(--surface-2)}
+.next .e{font-size:2rem}
+.next h4{margin:6px 0 4px}
+.next p{margin:0;color:var(--muted);font-size:.93rem}
+.ladder{display:grid;gap:6px}
+.ladder div{display:flex;gap:10px;align-items:center;padding:8px 12px;border-radius:9px;background:var(--surface-2);border:1px solid var(--line);font-size:.93rem}
+.ladder div b{min-width:150px}
+footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:.9rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="full nav">
+    <a class="logo" href="index.html"><span class="mark">i</span>iTraining</a>
+    <nav class="links">
+      <a href="index.html">Programs</a>
+      <a href="index.html#/progress">My progress</a>
+    </nav>
+    <button class="iconbtn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">◐</button>
+  </div>
+</header>
+
+<main class="full">
+  <div class="intro">
+    <div>
+      <h1>How a Computer Really Works</h1>
+      <p>Zero knowledge needed. We open the computer and imagine it as a <b>restaurant kitchen</b>, then follow your data from your fingers, into 0s and 1s, onto the disk and back to your eyes. Click any part of the drawing.</p>
+    </div>
+    <div class="layers" aria-label="Layers">
+      <span class="layer on">① Hardware &amp; data</span>
+      <span class="layer soon" title="Coming soon">② Security</span>
+      <span class="layer soon" title="Coming soon">③ Networks</span>
+      <span class="layer soon" title="Coming soon">④ Cloud</span>
+      <span class="layer soon" title="Coming soon">⑤ AI</span>
+    </div>
+  </div>
+
+  <nav class="chapters" id="chapters" aria-label="Chapters"></nav>
+
+  <div class="stage">
+    <div class="scene-card">
+      <svg class="scene" id="scene" viewBox="0 0 1600 760" role="img" aria-label="A desk with a monitor, keyboard, mouse, microphone, webcam, speakers and printer, connected to an opened central unit drawn as a kitchen">
+        <defs>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <radialGradient id="heatG"><stop offset="0" stop-color="#ef4444" stop-opacity=".75"/><stop offset="1" stop-color="#ef4444" stop-opacity="0"/></radialGradient>
+        </defs>
+
+        <!-- cables (static) -->
+        <g id="wires">
+          <path class="wire" d="M340 470 V452 H770 V340 H800"/>
+          <path class="wire" d="M590 467 V452"/>
+          <path class="wire" d="M390 40 H775 V340"/>
+          <path class="wire" d="M735 560 H785 V400 H800"/>
+          <path class="wire" d="M800 510 H765 V360 H620"/>
+          <path class="wire" d="M800 415 H790 V590 H65 V420"/>
+          <path class="wire" d="M675 420 V590"/>
+          <path class="wire" d="M230 660 H795 V350 H800"/>
+        </g>
+
+        <!-- DESK SIDE -->
+        <rect class="desk" x="10" y="560" width="770" height="12" rx="4"/>
+
+        <g class="part out" data-id="monitor" tabindex="0">
+          <rect class="p" x="120" y="50" width="500" height="320" rx="14"/>
+          <rect x="140" y="70" width="460" height="270" fill="#000" rx="3"/>
+          <foreignObject x="140" y="70" width="460" height="270"><div xmlns="http://www.w3.org/1999/xhtml" id="screen"></div></foreignObject>
+          <text class="t-sub" x="370" y="360" text-anchor="middle">MONITOR · output · the serving window</text>
+          <rect class="p" x="350" y="370" width="40" height="48"/>
+          <rect class="p" x="280" y="416" width="180" height="14" rx="7"/>
+        </g>
+
+        <g class="part in" data-id="webcam" tabindex="0">
+          <rect class="p" x="350" y="28" width="40" height="22" rx="9"/>
+          <circle cx="370" cy="39" r="6" fill="#1e293b"/><circle cx="372" cy="37" r="2" fill="#93c5fd"/>
+          <text class="t-sub" x="400" y="22">webcam · input</text>
+        </g>
+
+        <g class="part out" data-id="speakers" tabindex="0">
+          <rect class="p" x="30" y="250" width="70" height="170" rx="12"/>
+          <circle class="p2" cx="65" cy="295" r="17"/><circle class="p2" cx="65" cy="370" r="27"/><circle cx="65" cy="370" r="8" fill="var(--stroke)"/>
+          <rect class="p" x="640" y="250" width="70" height="170" rx="12"/>
+          <circle class="p2" cx="675" cy="295" r="17"/><circle class="p2" cx="675" cy="370" r="27"/><circle cx="675" cy="370" r="8" fill="var(--stroke)"/>
+          <text class="t-sub" x="65" y="240" text-anchor="middle">speaker</text>
+          <text class="t-sub" x="675" y="240" text-anchor="middle">speaker</text>
+        </g>
+
+        <g class="part in" data-id="keyboard" tabindex="0">
+          <rect class="p" x="150" y="468" width="380" height="74" rx="10"/>
+          <g id="keys"></g>
+          <text class="t-lbl" x="340" y="600" text-anchor="middle">KEYBOARD</text>
+          <text class="t-sub" x="340" y="617" text-anchor="middle">input · written order slips</text>
+        </g>
+
+        <g class="part in" data-id="mouse" tabindex="0">
+          <ellipse class="p" cx="590" cy="507" rx="27" ry="40"/>
+          <path d="M590 467 V495 M563 495 H617" stroke="var(--stroke)" stroke-width="2" fill="none"/>
+          <text class="t-lbl" x="590" y="600" text-anchor="middle">MOUSE</text>
+          <text class="t-sub" x="590" y="617" text-anchor="middle">input</text>
+        </g>
+
+        <g class="part in" data-id="mic" tabindex="0">
+          <rect class="p" x="719" y="402" width="32" height="50" rx="16"/>
+          <path d="M724 420 H746 M724 430 H746 M724 440 H746" stroke="var(--stroke)" stroke-width="1.5"/>
+          <rect class="p" x="732" y="452" width="6" height="100"/>
+          <ellipse class="p" cx="735" cy="554" rx="26" ry="7"/>
+          <text class="t-lbl" x="735" y="600" text-anchor="middle">MIC</text>
+          <text class="t-sub" x="735" y="617" text-anchor="middle">input</text>
+        </g>
+
+        <g class="part out" data-id="printer" tabindex="0">
+          <rect class="p2" x="70" y="606" width="130" height="26" rx="2"/>
+          <path d="M85 614 H185 M85 622 H160" stroke="var(--stroke)" stroke-width="1.5"/>
+          <rect class="p" x="40" y="626" width="190" height="80" rx="12"/>
+          <rect class="p2" x="62" y="680" width="146" height="10" rx="3"/>
+          <circle cx="205" cy="645" r="4" fill="var(--ok)"/>
+          <text class="t-lbl" x="135" y="730" text-anchor="middle">PRINTER · output</text>
+        </g>
+
+        <!-- legend -->
+        <g transform="translate(290,660)">
+          <rect class="legend-sw f-in" x="0" y="0" width="22" height="10"/><text class="t-sub" x="30" y="10">input data</text>
+          <rect class="legend-sw f-out" x="120" y="0" width="22" height="10"/><text class="t-sub" x="150" y="10">output data</text>
+          <rect class="legend-sw f-data" x="250" y="0" width="22" height="10"/><text class="t-sub" x="280" y="10">data inside</text>
+          <rect class="legend-sw f-pow" x="0" y="28" width="22" height="10"/><text class="t-sub" x="30" y="38">electricity</text>
+          <rect class="legend-sw f-air" x="120" y="28" width="22" height="10"/><text class="t-sub" x="150" y="38">air flow</text>
+          <text class="t-sub" x="250" y="38">💡 click any part</text>
+        </g>
+
+        <!-- CENTRAL UNIT -->
+        <g class="part" data-id="case" tabindex="0">
+          <rect class="case" x="800" y="20" width="780" height="720" rx="22"/>
+        </g>
+        <text class="t-big" x="830" y="54" pointer-events="none">CENTRAL UNIT</text>
+        <text class="t-sub" x="975" y="54" pointer-events="none">opened up · imagine a restaurant kitchen</text>
+
+        <g class="part" data-id="ports" tabindex="0">
+          <rect class="p" x="796" y="326" width="16" height="28" rx="3"/>
+          <rect class="p" x="796" y="392" width="16" height="14" rx="7"/><rect class="p" x="796" y="408" width="16" height="14" rx="7"/>
+          <rect class="p" x="796" y="498" width="16" height="24" rx="3"/>
+          <text class="t-sub" x="820" y="345">USB</text>
+          <text class="t-sub" x="820" y="412">audio</text>
+          <text class="t-sub" x="790" y="492" text-anchor="end">HDMI</text>
+        </g>
+
+        <g class="part" data-id="board" tabindex="0">
+          <rect class="board" x="1060" y="70" width="445" height="645" rx="10"/>
+          <path class="trace" d="M1070 280 H1120 M1240 250 H1290 M1240 280 H1290 M1180 320 V470 M1120 300 H1085 V530"/>
+          <path class="trace" d="M1080 600 H1480 M1080 620 H1480 M1080 640 H1480"/>
+          <text class="t-lbl" x="1080" y="680">MOTHERBOARD</text>
+          <text class="t-sub" x="1080" y="698">the floor plan &amp; corridors that connect every station</text>
+        </g>
+
+        <g class="part" data-id="psu" tabindex="0">
+          <rect class="p" x="830" y="74" width="200" height="110" rx="10"/>
+          <path d="M850 94 H1010 M850 102 H1010 M850 110 H1010" stroke="var(--stroke)" stroke-width="1.5" opacity=".6"/>
+          <text class="t-emo" x="850" y="160">⚡</text>
+          <text class="t-lbl" x="890" y="140">POWER SUPPLY</text>
+          <text class="t-sub" x="890" y="158">energy for the kitchen</text>
+        </g>
+
+        <g class="part" data-id="cooler" tabindex="0">
+          <rect class="p" x="1110" y="92" width="140" height="86" rx="10"/>
+          <path d="M1118 100 V170 M1128 100 V170 M1232 100 V170 M1242 100 V170" stroke="var(--stroke)" stroke-width="2"/>
+          <circle class="p2" cx="1180" cy="135" r="33"/>
+          <g class="blades"><path d="M1180 135 L1180 106 A14 14 0 0 1 1194 124 Z M1180 135 L1209 135 A14 14 0 0 1 1191 149 Z M1180 135 L1180 164 A14 14 0 0 1 1166 146 Z M1180 135 L1151 135 A14 14 0 0 1 1169 121 Z" fill="var(--stroke)"/></g>
+          <circle cx="1180" cy="135" r="6" fill="var(--surface)" stroke="var(--stroke)"/>
+          <text class="t-lbl" x="1262" y="128">CPU COOLER</text>
+          <text class="t-sub" x="1262" y="146">the extractor hood</text>
+        </g>
+
+        <g class="part" data-id="cpu" tabindex="0">
+          <circle class="heat" id="heat" cx="1180" cy="260" r="95" fill="url(#heatG)" opacity="0"/>
+          <rect class="p" x="1120" y="200" width="120" height="120" rx="8"/>
+          <rect class="p2" x="1134" y="214" width="92" height="92" rx="5"/>
+          <text class="t-lbl" x="1180" y="236" text-anchor="middle">CPU</text>
+          <text class="t-emo" x="1180" y="276" text-anchor="middle">👩‍🍳</text>
+          <text class="t-sub" x="1180" y="298" text-anchor="middle">the chef</text>
+        </g>
+
+        <g class="part" data-id="ram" tabindex="0">
+          <g id="ramsticks"></g>
+          <text class="t-lbl" x="1290" y="186">RAM</text>
+          <text class="t-sub" x="1328" y="186">the countertop</text>
+          <g id="ramdata"></g>
+        </g>
+
+        <g class="part" data-id="os" tabindex="0">
+          <rect class="p" x="1290" y="368" width="190" height="70" rx="10" stroke-dasharray="6 5"/>
+          <text class="t-emo" x="1302" y="414">🧑‍💼</text>
+          <text class="t-lbl" x="1344" y="398">OPERATING</text>
+          <text class="t-lbl" x="1344" y="414">SYSTEM</text>
+          <text class="t-sub" x="1344" y="430">software · the manager</text>
+        </g>
+
+        <g class="part" data-id="gpu" tabindex="0">
+          <rect class="p" x="1100" y="470" width="370" height="84" rx="10"/>
+          <circle class="p2" cx="1170" cy="512" r="30"/><circle class="p2" cx="1400" cy="512" r="30"/>
+          <g class="blades"><path d="M1170 512 L1170 486 A12 12 0 0 1 1182 502 Z M1170 512 L1196 512 A12 12 0 0 1 1180 524 Z M1170 512 L1170 538 A12 12 0 0 1 1158 522 Z M1170 512 L1144 512 A12 12 0 0 1 1160 500 Z" fill="var(--stroke)"/></g>
+          <g class="blades"><path d="M1400 512 L1400 486 A12 12 0 0 1 1412 502 Z M1400 512 L1426 512 A12 12 0 0 1 1410 524 Z M1400 512 L1400 538 A12 12 0 0 1 1388 522 Z M1400 512 L1374 512 A12 12 0 0 1 1390 500 Z" fill="var(--stroke)"/></g>
+          <text class="t-lbl" x="1285" y="504" text-anchor="middle">GRAPHICS CARD (GPU)</text>
+          <text class="t-sub" x="1285" y="524" text-anchor="middle">🎨 the plating team</text>
+        </g>
+
+        <g class="part" data-id="storage" tabindex="0">
+          <rect class="bay" x="830" y="455" width="210" height="260" rx="10"/>
+          <text class="t-lbl" x="846" y="480">STORAGE</text>
+          <text class="t-sub" x="924" y="480">🥫 the pantry</text>
+          <rect class="p" x="850" y="494" width="170" height="62" rx="6"/>
+          <rect class="p2" x="862" y="506" width="34" height="24" rx="2"/><rect class="p2" x="902" y="506" width="34" height="24" rx="2"/><rect class="p2" x="942" y="506" width="34" height="24" rx="2"/>
+          <text class="t-sub" x="985" y="524">SSD</text>
+          <rect class="p" x="850" y="570" width="170" height="122" rx="8"/>
+          <circle class="p2" cx="910" cy="631" r="44"/><circle cx="910" cy="631" r="6" fill="var(--stroke)"/>
+          <path d="M1000 590 L935 625" stroke="var(--stroke)" stroke-width="4" stroke-linecap="round"/>
+          <text class="t-sub" x="970" y="680">HDD</text>
+          <g id="jars"></g>
+        </g>
+
+        <g class="part" data-id="fans" tabindex="0">
+          <circle class="p" cx="1542" cy="130" r="32"/>
+          <g class="blades"><path d="M1542 130 L1542 104 A12 12 0 0 1 1554 120 Z M1542 130 L1568 130 A12 12 0 0 1 1552 142 Z M1542 130 L1542 156 A12 12 0 0 1 1530 140 Z M1542 130 L1516 130 A12 12 0 0 1 1532 118 Z" fill="var(--stroke)"/></g>
+          <circle class="p" cx="1542" cy="640" r="32"/>
+          <g class="blades"><path d="M1542 640 L1542 614 A12 12 0 0 1 1554 630 Z M1542 640 L1568 640 A12 12 0 0 1 1552 652 Z M1542 640 L1542 666 A12 12 0 0 1 1530 650 Z M1542 640 L1516 640 A12 12 0 0 1 1532 628 Z" fill="var(--stroke)"/></g>
+          <text class="t-sub" x="1542" y="182" text-anchor="middle">air out</text>
+          <text class="t-sub" x="1542" y="692" text-anchor="middle">air in</text>
+        </g>
+
+        <g id="flows" pointer-events="none"></g>
+      </svg>
+    </div>
+
+    <aside class="side" id="side" aria-live="polite">
+      <div id="info"></div>
+      <div id="chapterText"></div>
+      <div class="navbtns">
+        <button class="btn ghost" id="prevBtn">← Previous</button>
+        <button class="btn primary" id="nextBtn">Next →</button>
+      </div>
+    </aside>
+  </div>
+
+  <section class="lab" id="lab"></section>
+</main>
+
+<footer><div class="full">© <span id="yr"></span> iTraining · Layer ① Hardware &amp; data. Security, networks, cloud and AI layers are coming next.</div></footer>
+
+<script>
+/* =========================================================
+   PARTS: real role + kitchen analogy (reviewed)
+   ========================================================= */
+const COMP = {
+ cpu:{name:'CPU (Central Processing Unit)',role:'The chef 👩‍🍳',type:'core',
+  what:'The CPU follows instructions, one tiny step at a time: add two numbers, compare them, copy a value from here to there. It does billions of these steps every second. A 3 GHz CPU ticks 3 billion times per second. Modern CPUs have several <b>cores</b>, like several chefs sharing one kitchen.',
+  fits:'A chef reads a recipe and does every step in order. A <b>program</b> is the recipe, <b>data</b> are the ingredients, and the CPU is the one who cooks.',
+  breaks:'A real chef can taste, improvise and fix a bad recipe. A CPU never improvises. It does exactly what the instructions say, even when they are wrong. That is where bugs come from.',
+  deeper:'Inside the CPU are billions of <b>transistors</b>: microscopic switches that are either ON or OFF. Every calculation is built from these switches. The chef also keeps a tiny, ultra-fast memory "in their hands", called <b>registers</b> and <b>cache</b>, for what is being used this very second.'},
+ ram:{name:'RAM (Random Access Memory)',role:'The countertop 🍽️',type:'core',good:'Your "table" idea is right. We call it the countertop: the work surface next to the chef.',
+  what:'RAM holds everything the computer is working on <b>right now</b>: open apps, the document you are typing, the page you are reading. The CPU reaches it in about 100 nanoseconds, roughly 100,000 times faster than an old hard disk.',
+  fits:'The countertop is where today\'s ingredients are laid out, within arm\'s reach. More countertop means more dishes in progress at once, so you can keep more apps open without slowing down.',
+  breaks:'When the lights go out, ingredients stay on a real countertop. RAM is <b>wiped the instant power is lost</b>. That is why unsaved work disappears.',
+  deeper:'Typical computers have 8 to 32 GB of RAM. Each tiny cell holds an electric charge that leaks away, so it is refreshed thousands of times per second.'},
+ storage:{name:'Storage: SSD or hard disk (HDD)',role:'The pantry 🥫',type:'core',
+  fix:'We replaced the refrigerator with a pantry. A fridge needs electricity to keep food: unplug it and things spoil. Storage is the opposite. It keeps data for years with <b>no power at all</b>.',
+  what:'Storage keeps your files, your apps and the operating system, even when the computer is off. It is much bigger than RAM (256 GB to several TB) but slower to reach.',
+  fits:'A pantry stores lots of ingredients long-term on labelled shelves. To cook, you first bring ingredients to the countertop. In the same way, a file is <b>loaded from storage into RAM</b> before the CPU works on it.',
+  breaks:'Taking a jar out of a pantry empties the shelf. Opening a file only makes a <b>copy</b> in RAM; the original stays on the shelf.',
+  deeper:'<b>SSD</b>: no moving parts. It traps electrons in billions of tiny cells (charged or not charged). <b>HDD</b>: spinning metal platters covered with tiny magnetic regions pointing north or south, read by an arm that floats over them. Think of a rotating shelf with a robot arm.'},
+ cooler:{name:'CPU cooler (heatsink + fan)',role:'The extractor hood 🌬️',type:'core',
+  fix:'Small correction: the fan does not cool the chef directly. A metal <b>heatsink</b> touching the CPU soaks up the heat, and the fan blows that heat off the metal fins.',
+  what:'Working hard makes the CPU hot (it can pass 90 °C). Without cooling it would damage itself in seconds.',
+  fits:'Above the stove, a hood pulls hot air away so the chef can keep cooking at full speed.',
+  deeper:'If cooling fails, the CPU protects itself. First it slows down (<b>thermal throttling</b>); if it is still too hot, it switches the computer off.'},
+ fans:{name:'Case fans',role:'Kitchen ventilation 🪟',type:'core',
+  what:'Front fans pull cool air in, back fans push hot air out, so the heat of every part leaves the box.',
+  fits:'Windows and vents keep the whole kitchen fresh, not just the stove.',
+  deeper:'Dust blocks airflow and makes computers loud and slow. Cleaning it out is a real IT-support job.'},
+ psu:{name:'Power supply (PSU)',role:'The energy supply ⚡',type:'core',
+  what:'Turns the 220 V alternating current from the wall socket into small, steady currents (12 V, 5 V, 3.3 V) that the parts can use safely.',
+  fits:'A kitchen needs electricity and gas delivered safely to every station.',
+  deeper:'Its capacity is measured in watts (W). An office PC may need 300 W; a gaming PC with a big graphics card, 750 W or more.'},
+ board:{name:'Motherboard',role:'The floor plan & corridors 🗺️',type:'core',
+  what:'The big circuit board that everything plugs into. Thin copper tracks called <b>buses</b> carry data between the CPU, RAM, storage, graphics card and ports.',
+  fits:'Corridors and doors connect every station of the kitchen. Wider corridors move more ingredients at once.',
+  deeper:'Data between RAM and CPU travels on dozens of parallel lanes at once, which is why it is so fast.'},
+ gpu:{name:'Graphics card (GPU)',role:'The plating team 🎨',type:'core',
+  what:'Draws the image you see. A Full-HD screen has about 2 million pixels, redrawn 60 or more times per second. The GPU has <b>thousands</b> of small cores that each color a few pixels at the same moment.',
+  fits:'The head chef (CPU) decides what the dish is; a big team of decorators plates hundreds of plates in parallel.',
+  breaks:'Each decorator is much simpler than the chef. They are great at the same small job repeated millions of times, and bad at long, complicated recipes.',
+  deeper:'Because GPUs do the same small calculation millions of times at once, they are also the engines of modern <b>AI</b>. We will come back to this in the AI layer.'},
+ os:{name:'Operating system (Windows, macOS, Linux, Android)',role:'The kitchen manager 🧑‍💼',type:'core',
+  what:'Software, not a part you can touch. It decides which program the CPU works on, gives each program its own space in RAM, talks to every device through <b>drivers</b>, and keeps the inventory of files on storage, called the <b>file system</b>.',
+  fits:'A manager assigns orders to chefs, divides up the countertop and keeps the pantry inventory book up to date.',
+  deeper:'The OS itself lives on storage. When you press the power button it is copied into RAM and starts running. That is what <b>booting</b> means.'},
+ ports:{name:'Ports (USB, audio, HDMI)',role:'The kitchen doors 🚪',type:'core',
+  what:'Sockets where devices plug in. Input devices send data <b>in</b>; the screen, speakers and printer receive data <b>out</b>.',
+  fits:'Orders come in through one door, and finished dishes leave through the serving hatch.'},
+ case:{name:'Central unit (the case)',role:'The kitchen itself 🏠',type:'core',
+  what:'The box that protects all the parts that do the real work. A laptop or phone has the same parts, just squeezed together.',
+  fits:'Customers never see the kitchen; they only see orders going in and dishes coming out.'},
+ monitor:{name:'Monitor (screen)',role:'The serving window 🖥️',type:'out',
+  what:'Shows the image prepared by the GPU. It is a grid of millions of <b>pixels</b>; each pixel is three tiny lights (red, green and blue) mixed to make any color.',
+  fits:'The finished dish is presented to the customer through the serving window.',
+  deeper:'Look at a screen through a phone camera zoom and you can see the red, green and blue sub-pixels.'},
+ keyboard:{name:'Keyboard',role:'Written order slips 📝',type:'in',
+  what:'Each key press sends a small <b>code number</b> to the computer, not a letter. The operating system turns that code into a letter depending on your layout (AZERTY, QWERTY, Arabic…).',
+  fits:'A waiter hands the kitchen a written order.'},
+ mouse:{name:'Mouse / touchpad',role:'Pointing at the menu 👆',type:'in',
+  what:'Sends how far it moved (x and y) and which button was clicked, hundreds of times per second.',
+  fits:'Like pointing at a dish on the menu instead of writing it down.'},
+ mic:{name:'Microphone',role:'A spoken order 🎤',type:'in',
+  what:'Turns sound waves into numbers by measuring air pressure about 48,000 times per second.',
+  fits:'The customer says the order out loud.'},
+ webcam:{name:'Webcam',role:'The waiter\'s eyes 👀',type:'in',
+  what:'Takes about 30 pictures per second. Each picture is a grid of pixel colors, and each color is just numbers.',
+  fits:'The waiter looks at the customer.'},
+ speakers:{name:'Speakers',role:'Calling out the order 🔊',type:'out',
+  what:'Turn numbers back into vibrations of a thin membrane, which push air and become sound.',
+  fits:'The kitchen calls out "order ready!".'},
+ printer:{name:'Printer',role:'The takeaway box 🥡',type:'out',
+  what:'Puts the result on paper so you can carry it away.',
+  fits:'Food to take home.'}
+};
+const CAST_ORDER=['cpu','ram','storage','gpu','board','psu','cooler','fans','os','ports','keyboard','mouse','mic','webcam','monitor','speakers','printer'];
+
+/* =========================================================
+   DATA ROUTES (polylines in scene coordinates)
+   ========================================================= */
+const ROUTES={
+ kb:{c:'in',p:[[340,470],[340,452],[770,452],[770,340],[800,340]]},
+ mouse:{c:'in',p:[[590,467],[590,452],[770,452],[770,340],[800,340]]},
+ cam:{c:'in',p:[[390,40],[775,40],[775,340],[800,340]]},
+ mic:{c:'in',p:[[735,560],[785,560],[785,400],[800,400]]},
+ usb_cpu:{c:'in',p:[[812,340],[1070,340],[1070,280],[1120,280]]},
+ mic_cpu:{c:'in',p:[[812,400],[1075,400],[1075,296],[1120,296]]},
+ cpu_ram:{c:'data',p:[[1240,245],[1290,245]]},
+ ram_cpu:{c:'data',p:[[1290,285],[1240,285]]},
+ cpu_gpu:{c:'out',p:[[1180,320],[1180,470]]},
+ gpu_mon:{c:'out',p:[[1100,510],[765,510],[765,360],[620,360]]},
+ cpu_ssd:{c:'data',p:[[1120,305],[1085,305],[1085,525],[1020,525]]},
+ ssd_cpu:{c:'data',p:[[1020,540],[1092,540],[1092,312],[1120,312]]},
+ cpu_spk:{c:'out',p:[[1120,312],[1080,312],[1080,415],[790,415],[790,590],[65,590],[65,420]]},
+ cpu_prn:{c:'out',p:[[1120,316],[1095,316],[1095,350],[795,350],[795,660],[230,660]]},
+ power:{c:'pow',p:[[1030,130],[1090,130],[1090,192],[1180,192],[1180,200]]},
+ power2:{c:'pow',p:[[1030,160],[1060,160],[1060,465],[1100,480]]},
+ air:{c:'air',p:[[1590,640],[1500,620],[1330,450],[1200,210],[1280,150],[1590,130]]}
+};
+
+/* =========================================================
+   STATE (shared by all simulations)
+   ========================================================= */
+const HOME=['C:','Users','Student'];
+const FS={dirs:{Desktop:{dirs:{},files:{}},Documents:{dirs:{},files:{}},Downloads:{dirs:{},files:{}}},files:{}};
+const S={cwd:[],text:'',saved:null,wordOpen:false,power:true,html:null,htmlSaved:false,load:35,fanOk:true,openStep:-1,selIcon:null};
+function node(path){let n=FS;for(const p of path){n=n.dirs[p];if(!n)return null}return n}
+const desk=()=>FS.dirs.Desktop;
+function projectName(){return Object.keys(desk().dirs)[0]||null}
+function project(){const n=projectName();return n?desk().dirs[n]:null}
+function docName(){const p=project();if(!p)return null;return Object.keys(p.files).find(f=>/\.docx$/i.test(f))||null}
+const enc=new TextEncoder();
+const bytes=s=>enc.encode(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtB=n=>n<1024?n+' bytes':(n/1024).toFixed(1)+' KB';
+
+/* =========================================================
+   CHAPTERS
+   ========================================================= */
+const CH=[
+{id:'meet',t:'Meet the machine',hl:'all',flows:[],screen:'desktop',
+ body:`<p>A computer has two halves:</p>
+ <ul><li><b>Devices you touch</b>: screen, keyboard, mouse, microphone, camera, speakers, printer.</li>
+ <li>The <b>central unit</b>: the box where the real work happens.</li></ul>
+ <p>Imagine the central unit as a <b>restaurant kitchen</b>. Orders come in (you typing, clicking, speaking), the kitchen cooks (calculates), and dishes go out (images, sounds, paper).</p>
+ <div class="note good"><b>Try it</b>Click any part of the drawing to meet its kitchen role, see what it really does, and find out where the comparison stops working.</div>
+ <p>Every analogy has limits. A good engineer knows exactly where.</p>`},
+{id:'io',t:'Inputs & outputs',hl:['keyboard','mouse','mic','webcam','monitor','speakers','printer','ports','cpu','gpu'],flows:['kb','mouse','cam','mic','usb_cpu','mic_cpu','cpu_gpu','gpu_mon','cpu_spk','cpu_prn'],screen:'desktop',
+ body:`<p>Every computer, from a phone to a supercomputer, does the same three things:</p>
+ <div class="flowline"><span class="s" style="color:var(--in)">INPUT</span><span class="a">→</span><span class="s" style="color:var(--data)">PROCESS</span><span class="a">→</span><span class="s" style="color:var(--out)">OUTPUT</span></div>
+ <ul><li><b style="color:var(--in)">Inputs</b> bring information <i>in</i>: keyboard (written orders), mouse (pointing at the menu), microphone (spoken orders), webcam (the waiter's eyes).</li>
+ <li><b style="color:var(--data)">Processing</b> happens in the kitchen: the CPU cooks.</li>
+ <li><b style="color:var(--out)">Outputs</b> bring results <i>out</i>: screen (serving window), speakers, printer (takeaway box).</li></ul>
+ <div class="note"><b>Key idea</b>Whatever goes in, a key press, a sound or a picture, the computer turns it into <b>numbers</b>. The kitchen only ever cooks numbers.</div>`},
+{id:'power',t:'Power & heat',hl:['psu','cooler','fans','cpu'],flows:['power','power2','air'],screen:'desktop',
+ body:`<p>No kitchen works without energy, and every busy kitchen gets hot.</p>
+ <ul><li>The <b>power supply</b> turns 220 V from the wall into the small, safe voltages the parts need.</li>
+ <li>The CPU turns electricity into heat as it works. The <b>cooler</b>, a metal heatsink plus a fan, acts like the <b>extractor hood</b> above the stove.</li>
+ <li><b>Case fans</b> are the kitchen's ventilation: cool air in at the front, hot air out at the back.</li></ul>
+ <div class="note fix"><b>Analogy fix</b>The fans do not blow on the chef. They cool the metal fins that pull heat <i>out of</i> the CPU.</div>
+ <p>Use the simulator below: make the chef work harder and see what happens when cooling fails.</p>`},
+{id:'folder',t:'Create a folder',hl:['mouse','keyboard','ports','cpu','os','storage','monitor'],flows:['mouse','kb','usb_cpu','cpu_ssd','cpu_gpu','gpu_mon'],screen:'desktop',
+ body:`<p>Let's put something in the pantry. First a <b>folder</b>: a labelled box on a shelf.</p>
+ <p>You can ask the manager (the operating system) in two ways:</p>
+ <ul><li><b>Graphical way (GUI)</b>: point and click with the mouse.</li>
+ <li><b>Command line (terminal)</b>: type an exact written order.</li></ul>
+ <p>Both do <b>the same thing</b>: the OS writes a new line in the pantry's <b>inventory book</b> (the file system) saying "box <i>MyProject</i> is on the <i>Desktop</i> shelf".</p>
+ <div class="note"><b>Address</b>Every box has an exact address called a <b>path</b>:<br><code>C:\\Users\\Student\\Desktop\\MyProject</code><br>Pantry C: › Users › Student › Desktop shelf › MyProject box.</div>`},
+{id:'file',t:'Create a Word file',hl:['mouse','keyboard','ports','cpu','os','storage','monitor'],flows:['mouse','kb','usb_cpu','cpu_ssd','cpu_gpu','gpu_mon'],screen:'explorer',
+ body:`<p>Now we put a <b>file</b> inside the folder. A file is like a labelled <b>jar</b> inside the box.</p>
+ <p>The name has two parts: <code>report</code> + <code>.docx</code>. The part after the dot is the <b>extension</b>. It tells the manager which program knows how to open it: <code>.docx</code> means Word, <code>.html</code> means a web browser, <code>.jpg</code> means a picture viewer.</p>
+ <div class="note"><b>Fun fact</b>A brand-new empty Word file created from the desktop is <b>0 bytes</b>: an empty jar with a label. Word fills it the first time you save.</div>
+ <p>Do it below, with the mouse or in the terminal.</p>`},
+{id:'type',t:'Type your text',hl:['keyboard','ports','cpu','ram','gpu','monitor'],flows:['kb','usb_cpu','cpu_ram','ram_cpu','cpu_gpu','gpu_mon'],screen:'word',
+ body:`<p>Open the file and type. Here is what happens for <b>every single key</b>:</p>
+ <ol><li>The keyboard sends a code number through the USB cable.</li>
+ <li>The CPU (chef) receives it, and the OS turns it into a letter.</li>
+ <li>The letter is placed on the <b>countertop</b>: RAM.</li>
+ <li>The GPU redraws the screen so you see the letter.</li></ol>
+ <p>All of this takes a few thousandths of a second.</p>
+ <div class="note fix"><b>Danger</b>Your text is now <b>only in RAM</b>. Nothing has gone to the pantry yet. Press <b>⚡ Power cut</b> below to see what happens if the electricity goes off.</div>`},
+{id:'binary',t:'Into binary',hl:['cpu','ram'],flows:['cpu_ram','ram_cpu'],screen:'word',
+ body:`<p>The computer is made of billions of switches that can only be <b>ON</b> or <b>OFF</b>. We write ON as <b>1</b> and OFF as <b>0</b>. One switch is a <b>bit</b>.</p>
+ <p>A group of <b>8 bits</b> is a <b>byte</b>. 8 switches give 2×2×2×2×2×2×2×2 = <b>256</b> combinations, enough for every English letter, digit and symbol.</p>
+ <p>A shared dictionary called <b>Unicode</b> gives every character in the world a number: <code>A</code> = 65, <code>a</code> = 97, <span dir="ltr"><bdi>س</bdi> = 1587</span>, <span dir="ltr">😀 = 128512</span>. The <b>UTF-8</b> rule then writes that number as one to four bytes.</p>
+ <div class="note"><b>Try it</b>Type in the translator, including an Arabic letter or an emoji, and watch the switches.</div>`},
+{id:'save',t:'Save to disk',hl:['ram','cpu','os','storage'],flows:['ram_cpu','cpu_ssd'],screen:'word',
+ body:`<p>When you press <kbd>Ctrl</kbd>+<kbd>S</kbd>, the manager carries your text from the countertop to the pantry:</p>
+ <ol><li>Word packs the text from <b>RAM</b> into bytes.</li>
+ <li>The <b>CPU</b> sends those bytes through the motherboard to <b>storage</b>.</li>
+ <li>The SSD traps electrons in cells (or the HDD flips tiny magnets) to record each 0 and 1.</li>
+ <li>The <b>OS</b> updates the inventory book: report.docx, its size, where its bytes are, and when it was saved.</li></ol>
+ <div class="note good"><b>Now it is safe</b>After saving, a power cut no longer loses your text. Try it.</div>`},
+{id:'open',t:'Open it again',hl:['storage','cpu','ram','gpu','monitor'],flows:['ssd_cpu','cpu_ram','ram_cpu','cpu_gpu','gpu_mon'],screen:'auto',
+ body:`<p>Close Word, then double-click the file. The journey runs backwards:</p>
+ <ol><li><b>Pantry → countertop</b>: the bytes are <i>copied</i> from storage into RAM.</li>
+ <li><b>Decode</b>: the CPU turns bytes back into character numbers, and then into letters.</li>
+ <li><b>Font</b>: each letter becomes a shape (a font is a recipe for drawing letters).</li>
+ <li><b>Plating</b>: the GPU colors the right pixels.</li>
+ <li>The <b>screen</b> lights them up, and your eyes read human language again.</li></ol>
+ <p>The computer never "sees" letters. It only moves numbers; the meaning appears in <b>your</b> head.</p>`},
+{id:'html',t:'A web page from code',hl:['keyboard','cpu','ram','storage','gpu','monitor'],flows:['kb','usb_cpu','cpu_ram','cpu_ssd','ram_cpu','cpu_gpu','gpu_mon'],screen:'browser',
+ body:`<p>A developer writes a web page in <b>HTML</b>, a language that both humans and programs can read.</p>
+ <ol><li>The code is typed as normal text and saved as <code>index.html</code>. Like any file, it is stored as bytes, as 0s and 1s.</li>
+ <li>A <b>browser</b> (Chrome, Edge, Firefox) reads that text as a <b>recipe</b> and draws the page: headings, colors, buttons.</li></ol>
+ <div class="note fix"><b>Precision</b>HTML is <b>not</b> turned into machine code. The browser itself is a program already written in machine code, and it <b>reads</b> HTML the way a chef reads a recipe card.</div>
+ <p>Edit the code below and watch the screen change.</p>`},
+{id:'next',t:'What comes next',hl:'all',flows:[],screen:'desktop',
+ body:`<p>You now know how one computer works from top to bottom: parts, power, files, binary, saving, opening and web pages.</p>
+ <p>Next we will add new <b>layers</b> on top of this same drawing:</p>
+ <ul><li>🛡️ <b>Security</b>: a thief trying to get into the kitchen.</li>
+ <li>🌐 <b>Networks</b>: roads and delivery drivers between kitchens.</li>
+ <li>☁️ <b>Cloud</b>: renting space in a giant kitchen far away.</li>
+ <li>🤖 <b>AI</b>: an apprentice chef that learned from millions of recipes.</li></ul>`}
+];
+
+/* =========================================================
+   SCENE SETUP
+   ========================================================= */
+const svg=document.getElementById('scene');
+const NS='http://www.w3.org/2000/svg';
+const el=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e};
+(function keys(){const g=document.getElementById('keys');
+ const rows=[[14,0],[13,10],[12,16],[10,26]];
+ rows.forEach(([n,off],r)=>{for(let i=0;i<n;i++)el('rect',{class:'keycap',x:160+off+i*25.6,y:477+r*15.5,width:22,height:12,rx:2.5},g)});
+ el('rect',{class:'keycap',x:250,y:477+4*15.5-2,width:180,height:10,rx:3},g);})();
+(function ram(){const g=document.getElementById('ramsticks');
+ for(let i=0;i<4;i++){const x=1290+i*48;el('rect',{class:'p',x,y:195,width:32,height:150,rx:3},g);
+  for(let k=0;k<5;k++)el('rect',{class:'p2',x:x+6,y:204+k*27,width:20,height:20,rx:2},g);
+  el('rect',{x:x+3,y:340,width:26,height:5,fill:'var(--warn)',opacity:.7},g)}})();
+
+let flowState=[];let raf=null;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function setFlows(list){
+ const g=document.getElementById('flows');g.innerHTML='';flowState=[];
+ list.forEach(id=>{const r=ROUTES[id];if(!r)return;
+  const d='M'+r.p.map(q=>q.join(' ')).join(' L');
+  const path=el('path',{d,class:'route c-'+r.c},g);
+  const len=path.getTotalLength();const dots=[];
+  const n=Math.max(2,Math.round(len/140));
+  for(let i=0;i<n;i++)dots.push(el('circle',{r:7,class:'dot f-'+r.c,filter:'url(#glow)'},g));
+  flowState.push({path,len,dots,off:Math.random()});
+ });
+ if(!raf)tick();
+}
+let speedMul=1;
+function tick(t){
+ raf=requestAnimationFrame(tick);
+ const now=(t||0)/1000;
+ flowState.forEach(f=>{f.dots.forEach((d,i)=>{
+  const u=reduce?(i/f.dots.length):((now*0.22*speedMul*(300/Math.max(f.len,120))+f.off+i/f.dots.length)%1);
+  const pt=f.path.getPointAtLength(u*f.len);d.setAttribute('cx',pt.x);d.setAttribute('cy',pt.y)})});
+}
+
+/* RAM contents & pantry jars (visual memory) */
+function drawMemory(){
+ const rg=document.getElementById('ramdata');rg.innerHTML='';
+ const txt=S.power?S.text:'';const n=Math.min(20,Math.ceil(bytes(txt).length/6));
+ for(let i=0;i<n;i++){const s=i%4,k=Math.floor(i/4);el('rect',{x:1296+s*48,y:204+k*27,width:20,height:20,rx:2,fill:'var(--data)',opacity:.85},rg)}
+ const jg=document.getElementById('jars');jg.innerHTML='';
+ const p=project();if(!p)return;
+ el('rect',{x:862,y:538,width:20,height:12,rx:2,fill:'var(--warn)'},jg);
+ const dn=docName();if(dn){el('rect',{x:886,y:538,width:12,height:12,rx:6,fill:S.saved?'var(--data)':'var(--surface)',stroke:'var(--data)','stroke-width':2},jg)}
+ if(S.htmlSaved)el('rect',{x:902,y:538,width:12,height:12,rx:6,fill:'var(--out)'},jg);
+}
+
+/* =========================================================
+   MONITOR SCREEN
+   ========================================================= */
+const scrEl=document.getElementById('screen');
+function clock(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+function taskbar(extra){return `<div class="task"><span class="start"><i></i><i></i><i></i><i></i></span>${extra||''}<span class="clk">${clock()}</span></div>`}
+function desktopIcons(){
+ let h=`<div class="ico" style="left:6px;top:8px"><span class="g">🗑️</span>Recycle Bin</div>`;
+ let y=78;
+ Object.keys(desk().dirs).forEach(n=>{h+=`<div class="ico ${S.lastNew===n?'new':''} ${S.selIcon===n?'sel':''}" style="left:6px;top:${y}px"><span class="g">📁</span>${esc(n)}</div>`;y+=70});
+ Object.keys(desk().files).forEach(n=>{h+=`<div class="ico" style="left:6px;top:${y}px"><span class="g">${/\.html?$/.test(n)?'🌐':/\.docx$/.test(n)?'📘':'📄'}</span>${esc(n)}</div>`;y+=70});
+ return h;
+}
+function renderScreen(mode){
+ if(!S.power){scrEl.className='off';scrEl.innerHTML='';return}
+ scrEl.className='';
+ if(mode==='auto')mode=S.wordOpen?'word':'explorer';
+ let h=desktopIcons();
+ if(mode==='explorer'){
+  const pn=projectName();const p=project();
+  let rows='';
+  if(p){Object.entries(p.files).forEach(([n,f])=>{rows+=`<div class="frow ${S.lastNew===n?'sel':''}"><span>${/\.docx$/.test(n)?'📘':/\.html?$/.test(n)?'🌐':'📄'} ${esc(n)}</span><span>${n.endsWith('.docx')?'Word doc':'File'}</span><span>${fmtB(f.size)}</span></div>`});
+   Object.keys(p.dirs).forEach(n=>{rows+=`<div class="frow"><span>📁 ${esc(n)}</span><span>Folder</span><span></span></div>`})}
+  h+=`<div class="win w-exp"><div class="bar">📁 ${pn?esc(pn):'File Explorer'}<span class="dots">— ▢ ✕</span></div>
+   <div class="addr">This PC › Desktop${pn?' › '+esc(pn):''}</div>
+   <div class="files"><div class="frow h"><span>Name</span><span>Type</span><span>Size</span></div>${rows||`<div class="empty">${pn?'This folder is empty.':'Create the folder first.'}</div>`}</div></div>`;
+ }
+ if(mode==='word'){
+  const dn=docName()||'report.docx';
+  const unsaved=S.saved===null||S.saved!==S.text;
+  h+=`<div class="win w-word"><div class="bar">📘 ${esc(dn)} — Word ${unsaved?'<span style="opacity:.8">• not saved</span>':'<span style="opacity:.8">✓ saved</span>'}<span class="dots">— ▢ ✕</span></div>
+   <div class="ribbon"><span>File</span><span>Home</span><span>Insert</span><span>Layout</span><span><b>B</b> <i>I</i> <u>U</u></span></div>
+   <div class="docbg"><div class="paper">${esc(S.text)}<span class="caret"></span></div></div>
+   <div class="status"><span>${S.text.split(/\s+/).filter(Boolean).length} words</span><span>${S.text.length} characters</span></div></div>`;
+ }
+ if(mode==='browser'){
+  h+=`<div class="win w-br"><div class="bar">🌐 ${S.htmlSaved?'index.html':'New tab'}<span class="dots">— ▢ ✕</span></div>
+   <div class="addr">${S.htmlSaved?'file:///C:/Users/Student/Desktop/'+esc(projectName()||'MyProject')+'/index.html':'Save the page, then open it'}</div>
+   <div class="pgwrap" id="scrPg"></div></div>`;
+ }
+ const tb=mode==='word'?'<span class="tb">📘 Word</span>':mode==='explorer'?'<span class="tb">📁 Explorer</span>':mode==='browser'?'<span class="tb">🌐 Browser</span>':'';
+ h+=taskbar(tb);
+ scrEl.innerHTML=h;
+ if(mode==='browser')paintPage();
+}
+
+/* render the learner's HTML on the drawn monitor (shadow DOM, scripts and on* handlers removed) */
+function paintPage(){
+ const host=document.getElementById('scrPg');if(!host)return;
+ if(!S.htmlSaved){host.innerHTML='<div style="padding:20px;color:#6b7280;text-align:center">Save the page to open it in the browser.</div>';return}
+ const tpl=document.createElement('template');tpl.innerHTML=(S.html||'').replace(/<\/?(html|head|body)[^>]*>/gi,'');
+ tpl.content.querySelectorAll('script,iframe,object,embed,link,meta,base').forEach(n=>n.remove());
+ tpl.content.querySelectorAll('*').forEach(n=>[...n.attributes].forEach(a=>{if(/^on/i.test(a.name)||/javascript:/i.test(a.value))n.removeAttribute(a.name)}));
+ tpl.content.querySelectorAll('style').forEach(st=>st.textContent=st.textContent.replace(/(^|[\s,}])(html|body)(?=[\s,{.:#\[])/g,'$1.pg'));
+ const root=host.shadowRoot||host.attachShadow({mode:'open'});
+ root.innerHTML='<style>:host{display:block;height:100%;overflow:hidden;background:#fff;color:#000;font:16px Times New Roman,serif}.pg{min-height:100%;zoom:.55;margin:0;padding:8px}title{display:none}</style>';
+ const pg=document.createElement('div');pg.className='pg';pg.appendChild(tpl.content);root.appendChild(pg);
+}
+
+/* =========================================================
+   SIDE PANEL + PART INFO
+   ========================================================= */
+let cur=0;let sel=null;
+function showInfo(id){
+ const c=COMP[id];if(!c)return;sel=id;
+ svg.querySelectorAll('.part').forEach(p=>p.classList.toggle('sel',p.dataset.id===id));
+ const tag=c.type==='in'?'<span class="pill in">INPUT</span>':c.type==='out'?'<span class="pill out">OUTPUT</span>':'<span class="pill core">INSIDE</span>';
+ document.getElementById('info').innerHTML=`<div class="info"><button class="x" aria-label="Close" onclick="closeInfo()">✕</button>
+  <h3>${c.name}</h3><div class="role">${c.role} ${tag}</div><dl>
+  ${c.fix?`<div class="note fix" style="margin:0"><b>Analogy corrected</b>${c.fix}</div>`:''}
+  ${c.good?`<div class="note good" style="margin:0"><b>Analogy confirmed</b>${c.good}</div>`:''}
+  <div><dt>What it really does</dt><dd>${c.what}</dd></div>
+  ${c.fits?`<div><dt>Why the analogy works</dt><dd>${c.fits}</dd></div>`:''}
+  ${c.breaks?`<div><dt>Where the analogy breaks</dt><dd>${c.breaks}</dd></div>`:''}
+  ${c.deeper?`<div><dt>Go deeper</dt><dd>${c.deeper}</dd></div>`:''}</dl></div>`;
+ if(innerWidth<1200)document.getElementById('side').scrollIntoView({behavior:'smooth',block:'start'});
+ else document.getElementById('side').scrollTop=0;
+}
+function closeInfo(){sel=null;document.getElementById('info').innerHTML='';svg.querySelectorAll('.part').forEach(p=>p.classList.remove('sel'))}
+svg.querySelectorAll('.part').forEach(p=>{
+ p.addEventListener('click',()=>showInfo(p.dataset.id));
+ p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showInfo(p.dataset.id)}});
+ const c=COMP[p.dataset.id];if(c){const t=el('title',{},null);t.textContent=c.name+' — '+c.role;p.prepend(t)}
+});
+
+/* =========================================================
+   PROGRESS (shared with the home page)
+   ========================================================= */
+const KEY='itraining.progress.v1';
+let progress={};try{progress=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
+function markSeen(i){progress.foundations=progress.foundations||{};progress.foundations[i]=true;try{localStorage.setItem(KEY,JSON.stringify(progress))}catch(e){}}
+const seen=i=>!!(progress.foundations&&progress.foundations[i]);
+
+function renderChips(){
+ document.getElementById('chapters').innerHTML=CH.map((c,i)=>`<button class="ch ${i===cur?'on':''} ${seen(i)?'seen':''}" data-i="${i}"><b>${seen(i)&&i!==cur?'✓':i+1}</b>${c.t}</button>`).join('');
+ document.querySelectorAll('.ch').forEach(b=>b.onclick=()=>go(+b.dataset.i));
+ const on=document.querySelector('.ch.on');on&&on.scrollIntoView({block:'nearest',inline:'center'});
+}
+function go(i,noHash){
+ cur=Math.max(0,Math.min(CH.length-1,i));const c=CH[cur];
+ markSeen(cur);renderChips();closeInfo();
+ document.getElementById('chapterText').innerHTML=`<div class="kicker">Chapter ${cur+1} of ${CH.length}</div><h2>${c.t}</h2>${c.body}`;
+ const all=c.hl==='all';svg.classList.toggle('focus',!all);
+ svg.querySelectorAll('.part').forEach(p=>p.classList.toggle('hl',all||c.hl.includes(p.dataset.id)||p.dataset.id==='case'));
+ setFlows(c.flows);
+ S.lastNew=null;
+ if(c.id==='type'||c.id==='binary'||c.id==='save'){ensureDoc();S.wordOpen=true}
+ if(c.id==='html'&&S.html===null)S.html=DEFAULT_HTML;
+ renderScreen(c.screen);drawMemory();
+ LABS[c.id]();
+ document.getElementById('prevBtn').disabled=cur===0;
+ const nb=document.getElementById('nextBtn');nb.textContent=cur===CH.length-1?'Back to programs':'Next →';
+ if(!noHash)history.replaceState(null,'','#'+c.id);
+ document.getElementById('side').scrollTop=0;
+}
+document.getElementById('prevBtn').onclick=()=>go(cur-1);
+document.getElementById('nextBtn').onclick=()=>{if(cur===CH.length-1)location.href='index.html';else go(cur+1)};
+function ensureDoc(){
+ if(!projectName()){desk().dirs.MyProject={dirs:{},files:{}}}
+ if(!docName()){project().files['report.docx']={size:0}}
+}
+function refresh(){renderScreen(CH[cur].screen);drawMemory()}
+
+/* =========================================================
+   LABS
+   ========================================================= */
+const lab=document.getElementById('lab');
+const LABS={};
+
+LABS.meet=()=>{
+ lab.innerHTML=`<h3>The kitchen cast</h3><p class="lead">Every part, its kitchen role, and where the comparison stops working. Click a row to highlight the part in the drawing.</p>
+ <div class="tbl-wrap"><table class="cast"><thead><tr><th>Part</th><th>Kitchen role</th><th>What it really does</th><th>Where the analogy breaks</th></tr></thead><tbody>
+ ${CAST_ORDER.map(id=>{const c=COMP[id];const strip=s=>(s||'').replace(/<[^>]+>/g,'');
+  return `<tr data-id="${id}"><td><b>${c.name}</b><br>${c.type==='in'?'<span class="pill in">input</span>':c.type==='out'?'<span class="pill out">output</span>':'<span class="pill core">inside</span>'} ${c.fix?'<span class="pill fix">corrected</span>':''}</td><td>${c.role}</td><td>${strip(c.what)}</td><td>${strip(c.breaks)||'<span style="color:var(--muted)">Works well</span>'}</td></tr>`}).join('')}
+ </tbody></table></div>
+ <div class="cols3" style="margin-top:18px">
+  <div class="note fix" style="margin:0"><b>Refrigerator → Pantry</b>Storage keeps data with the power <i>off</i>. A fridge needs power to keep food, so a pantry is the better picture.</div>
+  <div class="note fix" style="margin:0"><b>Fans → Hood + heatsink</b>Fans do not blow on the CPU. They cool a metal heatsink that pulls heat out of it, like a hood above the stove.</div>
+  <div class="note good" style="margin:0"><b>Chef & table ✓</b>CPU = chef and RAM = table both work. We say <i>countertop</i>: fast, within reach, cleared at closing time.</div>
+ </div>`;
+ lab.querySelectorAll('tr[data-id]').forEach(r=>r.onclick=()=>{showInfo(r.dataset.id);window.scrollTo({top:0,behavior:'smooth'})});
+};
+
+LABS.io=()=>{
+ const items=[['Keyboard','in'],['Mouse','in'],['Microphone','in'],['Webcam','in'],['Monitor','out'],['Speakers','out'],['Printer','out'],['Touchscreen','both','You touch it (input) and it shows the image (output).'],['Headset with mic','both','Ears get sound (output); the mic sends your voice (input).'],['Game controller with vibration','both','Buttons are input; vibration is output.'],['Scanner','in','It turns paper into pixels for the computer.'],['Projector','out','A big screen on the wall.']];
+ lab.innerHTML=`<h3>Sort the devices</h3><p class="lead">Is it an input, an output, or both? Click your answer.</p><div class="quizgrid">${items.map((it,i)=>`<div class="qitem" data-i="${i}"><div class="nm">${it[0]}</div><div class="opts"><button data-a="in">Input</button><button data-a="out">Output</button><button data-a="both">Both</button></div><div class="fb"></div></div>`).join('')}</div>`;
+ lab.querySelectorAll('.qitem').forEach(q=>{const it=items[+q.dataset.i];q.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  q.querySelectorAll('button').forEach(x=>x.classList.remove('right','wrong'));
+  const ok=b.dataset.a===it[1];b.classList.add(ok?'right':'wrong');
+  q.querySelector('.fb').textContent=(ok?'✓ ':'✗ It is '+(it[1]==='both'?'both':it[1]==='in'?'an input':'an output')+'. ')+(it[2]||(it[1]==='in'?'It sends information into the computer.':'It brings results out to you.'));})});
+};
+
+LABS.power=()=>{
+ lab.innerHTML=`<h3>Kitchen heat simulator</h3><p class="lead">Drag the slider to give the chef more work. Then unplug the cooler and see how the CPU protects itself.</p>
+ <div class="cols"><div class="box">
+  <label for="load"><b>How hard the chef works (CPU load): <span id="lv"></span>%</b></label>
+  <input type="range" id="load" min="0" max="100" value="${S.load}">
+  <label class="row" style="margin-top:10px"><input type="checkbox" id="fanok" ${S.fanOk?'checked':''}> Cooler fan connected</label>
+  <p class="stat" style="margin-top:12px">Try: 100% load with the fan unplugged.</p>
+ </div><div class="box">
+  <div class="stat">Temperature: <b id="tv"></b></div><div class="gauge"><i id="tg"></i></div>
+  <div class="stat" style="margin-top:10px">Cooler fan speed: <b id="rv"></b></div>
+  <div class="stat" style="margin-top:4px">CPU speed: <b id="gv"></b></div>
+  <div class="stat" style="margin-top:4px">Power drawn from the supply: <b id="wv"></b></div>
+  <div id="pmsg" class="note" style="margin:12px 0 0"></div>
+ </div></div>`;
+ const upd=()=>{
+  S.load=+load.value;S.fanOk=fanok.checked;
+  const temp=Math.round(34+S.load*(S.fanOk?.52:1.05));
+  let ghz=1.2+S.load*.033, msg='',cls='note good';
+  if(temp>=100){ghz=0;msg='<b>Emergency shutdown</b>Over 100 °C. The CPU switched the computer off to save itself. Real CPUs do exactly this.';cls='note fix';S.power=false}
+  else if(temp>=90){ghz=Math.max(.8,ghz*.45);msg='<b>Thermal throttling</b>Too hot! The chef slows down on purpose so the heat drops. The computer feels slow.';cls='note';S.power=true}
+  else {msg=S.load<20?'<b>Relaxed</b>Nearly idle: browsing, reading.':'<b>Working normally</b>The cooler pulls the heat away fast enough.';S.power=true}
+  lv.textContent=S.load;tv.textContent=(S.power?temp:'—')+' °C';
+  tg.style.width=Math.min(100,temp)+'%';tg.style.background=temp>=90?'var(--bad)':temp>=70?'var(--warn)':'var(--ok)';
+  rv.textContent=S.fanOk?Math.round(600+S.load*16)+' RPM':'0 RPM (unplugged)';
+  gv.textContent=S.power?ghz.toFixed(1)+' GHz':'off';
+  wv.textContent=S.power?Math.round(45+S.load*1.6)+' W':'0 W';
+  pmsg.className=cls;pmsg.innerHTML=msg;
+  document.getElementById('heat').setAttribute('opacity',Math.max(0,(temp-50)/55).toFixed(2));
+  svg.querySelectorAll('[data-id="cooler"] .blades').forEach(b=>{b.style.animationPlayState=S.fanOk?'running':'paused';b.style.setProperty('--fan',(1.6-S.load*.013).toFixed(2)+'s')});
+  speedMul=.4+S.load/60;refresh();
+ };
+ load.oninput=upd;fanok.onchange=upd;upd();
+};
+function resetHeat(){document.getElementById('heat').setAttribute('opacity',0);svg.querySelectorAll('.blades').forEach(b=>{b.style.animationPlayState='running';b.style.removeProperty('--fan')});speedMul=1;if(!S.power){S.power=true}}
+
+/* ---- terminal shared by folder + file chapters ---- */
+function termLab(kind){
+ const tasks=kind==='folder'
+  ?[['cd Desktop','Go to the Desktop shelf',()=>S.cwd.join('/')==='Desktop'||!!projectName()],['mkdir MyProject','Make the folder',()=>!!projectName()],['ls','List what is on the Desktop',()=>S.didLs]]
+  :[['cd MyProject','Step inside the folder',()=>S.cwd[1]===projectName()&&!!projectName()||!!docName()],['New-Item report.docx','Create the empty Word file',()=>!!docName()],['ls','Check it is there',()=>S.didLs2]];
+ lab.innerHTML=`<h3>${kind==='folder'?'Create a folder: two ways':'Create a Word file: two ways'}</h3><p class="lead">Use the <b>graphical way</b> on the left, or type commands in the <b>terminal</b> on the right. Both talk to the same manager, and the monitor updates either way.</p>
+ <div class="cols">
+  <div class="box"><h4>🖱️ The graphical way (Windows)</h4>
+   ${kind==='folder'
+    ?`<ol><li><b>Right-click</b> on an empty part of the desktop.</li><li>Choose <b>New › Folder</b>.</li><li>Type the name <b>MyProject</b> and press <kbd>Enter</kbd>.</li></ol>`
+    :`<ol><li><b>Double-click</b> the MyProject folder to open it.</li><li><b>Right-click</b> inside the empty window.</li><li>Choose <b>New › Microsoft Word Document</b>.</li><li>Name it <b>report.docx</b>, then press <kbd>Enter</kbd>.</li></ol>`}
+   <div class="row" style="margin-top:12px"><button class="btn primary sm" id="guiBtn">${kind==='folder'?'Do it: right-click › New › Folder':'Do it: right-click › New › Word Document'}</button><button class="btn ghost sm" id="resetBtn">Reset</button></div>
+   <div class="note" style="margin:14px 0 0"><b>What really happens</b>${kind==='folder'?'Your clicks travel <b>mouse → USB → CPU</b>. The OS writes a new entry in the file system on <b>storage</b>, and the GPU draws a new icon on the <b>screen</b>.':'The OS creates an entry named <b>report.docx</b> inside MyProject, size <b>0 bytes</b>. The jar is labelled but still empty.'}</div>
+  </div>
+  <div class="box"><h4>⌨️ The terminal way (PowerShell)</h4>
+   <div class="term" id="term"></div>
+   <ul class="tasks" id="tasks"></ul>
+   <p class="stat" style="margin:10px 0 0">Click a command to type it for you. Commands: <span class="cmdchip">cd</span> <span class="cmdchip">mkdir</span> <span class="cmdchip">New-Item</span> <span class="cmdchip">ls</span> <span class="cmdchip">pwd</span> <span class="cmdchip">cls</span> <span class="cmdchip">help</span></p>
+  </div>
+ </div>`;
+ const term=document.getElementById('term');
+ const prompt=()=>'PS '+[...HOME,...S.cwd].join('\\')+'>';
+ const out=(t,c='')=>{const d=document.createElement('div');d.className='ln '+c;d.textContent=t;term.insertBefore(d,term.lastChild)};
+ const inrow=document.createElement('div');inrow.className='inrow';
+ inrow.innerHTML=`<span class="pr"></span><input aria-label="Terminal command" autocomplete="off" spellcheck="false">`;
+ term.appendChild(inrow);const inp=inrow.querySelector('input');
+ const setPr=()=>{inrow.querySelector('.pr').textContent=prompt()};setPr();
+ out('Windows PowerShell  ·  practice terminal','dim');out('Type help to see what you can do.','dim');
+ term.onclick=()=>inp.focus();
+ const drawTasks=()=>{document.getElementById('tasks').innerHTML=tasks.map(t=>`<li class="${t[2]()?'done':''}"><span class="ck">${t[2]()?'✓':''}</span><span><button class="cmdchip" data-c="${t[0]}">${t[0]}</button> ${t[1]}</span></li>`).join('');
+  document.querySelectorAll('#tasks .cmdchip').forEach(b=>b.onclick=e=>{e.stopPropagation();inp.value=b.dataset.c;inp.focus()})};
+ const run=raw=>{
+  const line=raw.trim();out(prompt()+' '+line,'pr');if(!line)return;
+  let m;const here=node(S.cwd);
+  const parts=line.split(/\s+/);const cmd=parts[0].toLowerCase();
+  if(cmd==='help'){out('cd <folder>      go into a folder   (cd .. goes back up)\nmkdir <name>     make a folder\nNew-Item <name>  make an empty file   (also: ni <name>)\nls / dir         list what is here\npwd              show where you are\ncls              clear the screen')}
+  else if(cmd==='cls'||cmd==='clear'){[...term.querySelectorAll('.ln')].forEach(x=>x.remove())}
+  else if(cmd==='pwd'){out([...HOME,...S.cwd].join('\\'))}
+  else if(cmd==='ls'||cmd==='dir'||cmd==='get-childitem'){
+   const ds=Object.keys(here.dirs),fs=Object.entries(here.files);
+   if(!ds.length&&!fs.length)out('(empty)','dim');
+   else{out('Mode   Length  Name','dim');ds.forEach(d=>out('d----          '+d));fs.forEach(([n,f])=>out('-a---  '+String(f.size).padStart(6)+'  '+n))}
+   if(S.cwd.join('/')==='Desktop')S.didLs=true; if(S.cwd[0]==='Desktop'&&S.cwd[1])S.didLs2=true;
+  }
+  else if(cmd==='cd'||cmd==='set-location'){
+   const a=line.slice(parts[0].length).trim().replace(/^["']|["']$/g,'');
+   if(!a||a==='~'){S.cwd=[]}
+   else if(a==='..'){S.cwd.pop()}
+   else{const segs=a.replace(/\//g,'\\').split('\\').filter(Boolean);let p=[...S.cwd];let ok=true;
+    for(const s of segs){if(s==='..'){p.pop();continue}const n=node(p);const k=n&&Object.keys(n.dirs).find(d=>d.toLowerCase()===s.toLowerCase());if(!k){ok=false;break}p.push(k)}
+    if(ok)S.cwd=p;else out(`cd : Cannot find path '${a}' because it does not exist.`,'er')}
+  }
+  else if(cmd==='mkdir'||cmd==='md'||(cmd==='new-item'&&/-itemtype\s+directory/i.test(line))){
+   const name=line.replace(/^\S+\s*/,'').replace(/-ItemType\s+Directory/i,'').replace(/-Name\s+/i,'').trim().replace(/^["']|["']$/g,'');
+   if(!name)out('Please give the folder a name, like: mkdir MyProject','er');
+   else if(/[\\/:*?"<>|]/.test(name))out('A name cannot contain \\ / : * ? " < > |','er');
+   else if(here.dirs[name])out('An item with the specified name already exists.','er');
+   else{here.dirs[name]={dirs:{},files:{}};S.lastNew=name;out('\n    Directory: '+[...HOME,...S.cwd].join('\\')+'\n\nd----   '+name+'\n','ok');
+    if(S.cwd.join('/')!=='Desktop')out('Tip: it was created here, not on the Desktop. Use cd Desktop first to see it on screen.','dim')}
+  }
+  else if(cmd==='new-item'||cmd==='ni'||(m=line.match(/^type\s+nul\s*>\s*(.+)$/i))){
+   const name=(m?m[1]:line.replace(/^\S+\s*/,'').replace(/-ItemType\s+File/i,'').replace(/-Name\s+/i,'')).trim().replace(/^["']|["']$/g,'');
+   if(!name)out('Please give the file a name, like: New-Item report.docx','er');
+   else if(here.files[name])out('The file already exists.','er');
+   else{here.files[name]={size:0};S.lastNew=name;out('-a---       0  '+name,'ok');
+    if(!/\.\w+$/.test(name))out('Tip: no extension. Windows will not know which app opens it. Try report.docx','dim')}
+  }
+  else out(`'${parts[0]}' is not recognized as a command. Type help.`,'er');
+  setPr();drawTasks();refresh();setTimeout(()=>{S.lastNew=null},700);term.scrollTop=term.scrollHeight;
+ };
+ inp.addEventListener('keydown',e=>{if(e.key==='Enter'){run(inp.value);inp.value=''}});
+ document.getElementById('guiBtn').onclick=()=>{
+  if(kind==='folder'){if(!desk().dirs.MyProject){desk().dirs.MyProject={dirs:{},files:{}};S.lastNew='MyProject';S.selIcon='MyProject'}}
+  else{if(!projectName())desk().dirs.MyProject={dirs:{},files:{}};if(!docName()){project().files['report.docx']={size:0};S.lastNew='report.docx'}}
+  drawTasks();refresh();setTimeout(()=>{S.lastNew=null;S.selIcon=null},900);
+ };
+ document.getElementById('resetBtn').onclick=()=>{
+  if(kind==='folder'){FS.dirs.Desktop={dirs:{},files:{}};S.cwd=[];S.didLs=false;S.saved=null;S.text='';S.htmlSaved=false}
+  else{const p=project();if(p)p.files={};S.saved=null;S.text='';S.didLs2=false;S.htmlSaved=false}
+  setPr();drawTasks();refresh();
+ };
+ drawTasks();
+}
+LABS.folder=()=>termLab('folder');
+LABS.file=()=>termLab('file');
+
+/* ---- typing + power cut ---- */
+function powerCut(after){
+ S.power=false;refresh();
+ svg.style.transition='filter .3s';svg.style.filter='grayscale(1) brightness(.7)';
+ setTimeout(()=>{S.power=true;svg.style.filter='';
+  const lost=S.saved===null?S.text:(S.saved!==S.text?S.text:'');
+  S.text=S.saved===null?'':S.saved;refresh();after&&after(lost)},1600);
+}
+LABS.type=()=>{
+ lab.innerHTML=`<h3>Type into Word</h3><p class="lead">Type in the box. Each key travels keyboard → CPU → RAM, and the screen is redrawn.</p>
+ <div class="cols"><div class="box">
+  <textarea class="inp" id="tx" rows="6" placeholder="Write something about yourself…">${esc(S.text)}</textarea>
+  <div class="row" style="margin-top:10px"><span id="sb"></span><span class="stat" id="ramst"></span></div>
+ </div><div class="box">
+  <h4>⚡ What if the power goes off now?</h4>
+  <p class="stat">Your text lives only on the countertop (RAM). RAM needs electricity to remember anything.</p>
+  <button class="btn warn" id="cut">⚡ Power cut!</button>
+  <div id="cutmsg" style="margin-top:12px"></div>
+ </div></div>`;
+ const upd=()=>{const uns=S.saved===null||S.saved!==S.text;
+  sb.innerHTML=uns?'<span class="badge unsaved">● In RAM only: not saved</span>':'<span class="badge saved">✓ Saved to storage</span>';
+  ramst.innerHTML=`RAM used by your text: <b>${fmtB(bytes(S.text).length)}</b>`};
+ tx.oninput=()=>{S.text=tx.value;refresh();upd()};upd();
+ cut.onclick=()=>{cut.disabled=true;powerCut(lost=>{cut.disabled=false;tx.value=S.text;upd();
+  cutmsg.innerHTML=lost?`<div class="note fix" style="margin:0"><b>Lost!</b>${esc(lost.length>60?lost.slice(0,60)+'…':lost)}<br>The countertop was wiped. That's why we <b>save</b>: next chapters show how.</div>`
+   :`<div class="note good" style="margin:0"><b>Nothing lost</b>${S.saved?'Your text was already saved in the pantry.':'There was no text yet. Type something and try again.'}</div>`})};
+};
+
+LABS.binary=()=>{
+ const start=(S.text||'Hi! سلام 😀').slice(0,24);
+ lab.innerHTML=`<h3>Text → numbers → bits</h3><p class="lead">This is exactly how your text looks inside RAM and on the disk. Lit squares are switches that are ON (1).</p>
+ <input class="inp" id="bt" value="${esc(start)}" maxlength="40" aria-label="Text to translate">
+ <div class="flowline" style="margin-top:12px"><span class="s">Letter</span><span class="a">→ Unicode →</span><span class="s">Number</span><span class="a">→ UTF-8 →</span><span class="s">Bytes</span><span class="a">→</span><span class="s">8 switches each</span></div>
+ <div class="bin" id="bins"></div>
+ <p class="stat" id="bsum" style="margin-top:12px"></p>
+ <div class="note" style="margin:12px 0 0"><b>Honest detail</b>A real Word file stores more than your letters. It adds formatting (fonts, bold, page size) written in a language called XML, then compresses it like a .zip. Even an almost empty .docx is around 12 KB. A simple <b>.txt</b> file would hold exactly the bytes you see here.</div>`;
+ const draw=()=>{const s=bt.value;let h='';let total=0;
+  for(const ch of s){const cp=ch.codePointAt(0);const b=[...bytes(ch)];total+=b.length;
+   h+=`<div class="bchar"><div class="c">${ch===' '?'␣':esc(ch)}</div><div class="n">number ${cp} · ${b.length} byte${b.length>1?'s':''}</div>
+   ${b.map(x=>`<div class="byte">${[...x.toString(2).padStart(8,'0')].map(v=>`<i class="${v==='1'?'on':''}"></i>`).join('')}</div><div class="bits">${x.toString(2).padStart(8,'0')}</div>`).join('')}</div>`}
+  bins.innerHTML=h||'<p class="stat">Type something above.</p>';
+  bsum.innerHTML=`<b>${[...s].length}</b> characters → <b>${total}</b> bytes → <b>${total*8}</b> bits (switches). English letters need 1 byte, Arabic letters 2, emojis 4.`};
+ bt.oninput=draw;draw();
+};
+
+LABS.save=()=>{
+ lab.innerHTML=`<h3>Save it to the pantry</h3><p class="lead">Press the button or <kbd>Ctrl</kbd>+<kbd>S</kbd>. Watch the teal dots travel RAM → CPU → storage.</p>
+ <div class="cols"><div class="box">
+  <textarea class="inp" id="tx2" rows="4">${esc(S.text)}</textarea>
+  <div class="row" style="margin-top:10px"><button class="btn primary" id="sv">💾 Save (Ctrl+S)</button><button class="btn warn" id="cut2">⚡ Power cut!</button><span id="sb2"></span></div>
+  <div id="cutmsg2" style="margin-top:10px"></div>
+ </div><div class="box">
+  <h4>📒 The manager's inventory book (file system)</h4>
+  <div id="inv"></div>
+  <div class="note" style="margin:12px 0 0"><b>How the bits are kept</b><b style="display:inline;text-transform:none;letter-spacing:0">SSD</b>: electrons trapped in tiny cells stay there for years without power. <b style="display:inline;text-transform:none;letter-spacing:0">HDD</b>: tiny magnets on a spinning disk point north (1) or south (0).</div>
+ </div></div>`;
+ const upd=()=>{const uns=S.saved===null||S.saved!==S.text;
+  sb2.innerHTML=uns?'<span class="badge unsaved">● not saved</span>':'<span class="badge saved">✓ saved</span>';
+  const dn=docName();const f=project().files[dn];
+  const b=[...bytes(S.saved||'')].slice(0,6);
+  inv.innerHTML=`<table class="cast"><tbody>
+   <tr><td>Name</td><td><b>${esc(dn)}</b></td></tr>
+   <tr><td>Path</td><td><code>C:\\Users\\Student\\Desktop\\${esc(projectName())}\\${esc(dn)}</code></td></tr>
+   <tr><td>Your text</td><td>${fmtB(f.size)}</td></tr>
+   <tr><td>First bytes on disk</td><td><code>${b.length?b.map(x=>x.toString(2).padStart(8,'0')).join(' ')+(bytes(S.saved).length>6?' …':''):'(empty jar)'}</code></td></tr>
+   <tr><td>Last saved</td><td>${S.savedAt||'never'}</td></tr></tbody></table>`};
+ const save=()=>{S.saved=S.text;project().files[docName()].size=bytes(S.text).length;S.savedAt=new Date().toLocaleTimeString();
+  setFlows(['ram_cpu','cpu_ssd']);speedMul=2.5;setTimeout(()=>speedMul=1,1500);refresh();upd()};
+ tx2.oninput=()=>{S.text=tx2.value;refresh();upd()};
+ sv.onclick=save;LABS._save=save;
+ cut2.onclick=()=>{cut2.disabled=true;powerCut(lost=>{cut2.disabled=false;tx2.value=S.text;upd();
+  cutmsg2.innerHTML=lost?`<div class="note fix" style="margin:0"><b>Partly lost</b>The changes after your last save were lost: “${esc(lost.slice(0,50))}”. The saved version came back from the pantry.</div>`
+   :`<div class="note good" style="margin:0"><b>Safe!</b>Power came back, and the text was reloaded from storage. Nothing was lost.</div>`})};
+ upd();
+};
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&['type','save'].includes(CH[cur].id)){e.preventDefault();if(CH[cur].id==='type'){go(7)}setTimeout(()=>LABS._save&&LABS._save(),50)}});
+
+LABS.open=()=>{
+ ensureDoc();
+ const steps=[['📦 Pantry → countertop','The bytes of report.docx are copied from storage into RAM.',['ssd_cpu','cpu_ram']],
+  ['🔢 Bytes → numbers → letters','The CPU reads the bytes with the UTF-8 rule and gets the character numbers back.',['ram_cpu','cpu_ram']],
+  ['🔤 Letters → shapes','A font is a recipe for drawing each letter. The CPU works out where every line and curve goes.',['ram_cpu']],
+  ['🎨 Shapes → pixels','The GPU colors the right pixels in the image.',['cpu_gpu']],
+  ['🖥️ Pixels → your eyes','The screen lights up its red, green and blue sub-pixels 60 times a second.',['gpu_mon']]];
+ lab.innerHTML=`<h3>Open the file again</h3><p class="lead">${S.saved===null?'<b>Tip:</b> you have not saved any text yet, so the file will open empty. Go back to chapter 8 and save first.':'Close Word, then double-click the file to bring it back.'}</p>
+ <div class="cols"><div class="box">
+  <div class="row"><button class="btn ghost" id="cl">✕ Close Word</button><button class="btn primary" id="op">📘 Double-click report.docx</button></div>
+  <div class="pipe" id="pipe" style="margin-top:14px">${steps.map((s,i)=>`<div class="st" data-i="${i}"><b class="n">${i+1}</b><div><b>${s[0]}</b><div class="stat">${s[1]}</div></div></div>`).join('')}</div>
+ </div><div class="box">
+  <h4>🔍 Zoom into the screen</h4>
+  <p class="stat">This is the first letter of your document, the way the screen really shows it: a grid of tiny colored squares (pixels).</p>
+  <div class="row" style="align-items:flex-start;gap:18px"><div id="pix"></div><div class="stat" id="pixinfo"></div></div>
+ </div></div>`;
+ const letter=()=>([...(S.saved||S.text||'A').trim()][0])||'A';
+ const drawPix=()=>{const L=letter();const N=18;const c=document.createElement('canvas');c.width=c.height=N;const x=c.getContext('2d');
+  x.fillStyle='#fff';x.fillRect(0,0,N,N);x.fillStyle='#111';x.font='bold 15px Arial, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(L,N/2,N/2+1);
+  const d=x.getImageData(0,0,N,N).data;let h=`<div class="pix" style="grid-template-columns:repeat(${N},13px)">`;let on=0;
+  for(let i=0;i<N*N;i++){const v=d[i*4];if(v<200)on++;h+=`<i style="background:rgb(${v},${v},${v})"></i>`}
+  pix.innerHTML=h+'</div>';pixinfo.innerHTML=`Letter <b>${esc(L)}</b><br>${N}×${N} = ${N*N} pixels<br><b>${on}</b> are dark<br><br>Your whole screen has about <b>2,000,000</b> pixels, each made of red, green and blue lights.`};
+ const run=()=>{S.wordOpen=false;refresh();let i=0;const els=[...pipe.children];els.forEach(e=>e.className='st');op.disabled=true;
+  const stepf=()=>{if(i>0)els[i-1].className='st done';if(i===steps.length){S.wordOpen=true;S.text=S.saved||'';refresh();setFlows(CH[cur].flows);op.disabled=false;drawPix();return}
+   els[i].className='st on';setFlows(steps[i][2]);i++;setTimeout(stepf,1100)};stepf()};
+ cl.onclick=()=>{S.wordOpen=false;refresh()};op.onclick=run;drawPix();
+};
+
+const DEFAULT_HTML=`<!DOCTYPE html>
+<html>
+  <head>
+    <title>My first page</title>
+    <style>
+      body { font-family: sans-serif; background: #f0fdfa; padding: 16px; }
+      h1   { color: #0f766e; }
+      button { background: #0f766e; color: white; border: 0;
+               padding: 8px 14px; border-radius: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>Hello, I am learning!</h1>
+    <p>This page was written by a <b>human</b> and drawn by a <b>browser</b>.</p>
+    <button>A button</button>
+  </body>
+</html>`;
+LABS.html=()=>{
+ lab.innerHTML=`<h3>From developer language to a page</h3><p class="lead">Left: what the developer writes. Right: what the browser draws. Change a word or a color and watch both the preview and the monitor.</p>
+ <div class="cols"><div class="box">
+  <h4>👩‍💻 index.html (written by a human)</h4>
+  <textarea class="inp code" id="code" spellcheck="false" aria-label="HTML code">${esc(S.html||DEFAULT_HTML)}</textarea>
+  <div class="row" style="margin-top:10px"><button class="btn primary" id="hs">💾 Save as index.html</button><button class="btn ghost" id="hr">Reset code</button><span id="hst"></span></div>
+ </div><div class="box">
+  <h4>🌐 What the browser draws (read by a human)</h4>
+  <iframe id="prev" sandbox="" title="Page preview" style="width:100%;height:260px;border:1px solid var(--line);border-radius:10px;background:#fff"></iframe>
+  <h4 style="margin-top:14px">💾 How it is stored (computer language)</h4>
+  <div class="mono" id="hb" style="font-size:.8rem;word-break:break-all;color:var(--muted)"></div>
+ </div></div>
+ <h4 style="margin:20px 0 8px">The language ladder</h4>
+ <div class="ladder">
+  <div><b>👩‍💻 You</b>write HTML: words and tags, made for humans to read and write.</div>
+  <div><b>📄 The file</b>is stored as bytes. <code>&lt;</code> is 00111100, <code>h</code> is 01101000…</div>
+  <div><b>🌐 The browser</b>a program already in machine code. It reads the HTML recipe and decides what to draw.</div>
+  <div><b>👩‍🍳 The CPU</b>runs the browser's machine-code instructions: add, compare, move…</div>
+  <div><b>⚡ Transistors</b>billions of switches turning ON and OFF. This is the deepest level.</div>
+ </div>`;
+ const upd=()=>{S.html=code.value;prev.srcdoc=S.html;
+  const b=[...bytes(S.html)];hb.innerHTML=`${fmtB(b.length)} · first bytes: `+b.slice(0,10).map(x=>x.toString(2).padStart(8,'0')).join(' ')+' …';
+  hst.innerHTML=S.htmlSaved?(project().files['index.html'].size===b.length?'<span class="badge saved">✓ saved</span>':'<span class="badge unsaved">● changes not saved</span>'):'<span class="badge unsaved">● not saved</span>';
+  if(S.htmlSaved)paintPage()};
+ let tmr;code.oninput=()=>{clearTimeout(tmr);tmr=setTimeout(upd,250)};
+ code.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=code.selectionStart;code.setRangeText('  ',s,code.selectionEnd,'end')}});
+ hs.onclick=()=>{ensureDoc();S.htmlSaved=true;project().files['index.html']={size:bytes(S.html).length};setFlows(['cpu_ram','cpu_ssd','ssd_cpu','cpu_gpu','gpu_mon']);refresh();upd()};
+ hr.onclick=()=>{code.value=DEFAULT_HTML;upd()};
+ upd();
+};
+
+LABS.next=()=>{
+ lab.innerHTML=`<h3>Coming next on this same drawing</h3><p class="lead">Each layer adds new characters to the kitchen you now know.</p>
+ <div class="cols3" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
+  <div class="next"><div class="e">🛡️</div><h4>Security</h4><p>A thief tries the back door, a fake waiter brings a poisoned order (malware), and locks and guards keep the pantry safe.</p></div>
+  <div class="next"><div class="e">🌐</div><h4>Networks</h4><p>Roads, addresses and delivery drivers carry orders between kitchens all over the world.</p></div>
+  <div class="next"><div class="e">☁️</div><h4>Cloud</h4><p>Instead of a bigger pantry at home, rent space in a giant kitchen far away (a server).</p></div>
+  <div class="next"><div class="e">🤖</div><h4>AI</h4><p>An apprentice chef that learned by studying millions of recipes, trained with the plating team (GPUs).</p></div>
+ </div>
+ <div class="row" style="margin-top:18px"><a class="btn primary" href="index.html">Back to all programs</a><button class="btn ghost" onclick="go(0)">Start again</button></div>`;
+};
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+const _go=go;go=function(i,n){resetHeat();_go(i,n)};
+const start=CH.findIndex(c=>'#'+c.id===location.hash);
+go(start>=0?start:0,start<0);
+setInterval(()=>{const c=scrEl.querySelector('.clk');c&&(c.textContent=clock())},30000);
+
+const themeBtn=document.getElementById('themeBtn');
+try{const th=localStorage.getItem('itraining.theme');if(th)document.documentElement.dataset.theme=th}catch(e){}
+themeBtn.onclick=()=>{const c=document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');const n=c==='dark'?'light':'dark';document.documentElement.dataset.theme=n;try{localStorage.setItem('itraining.theme',n)}catch(e){}};
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
